@@ -1,15 +1,17 @@
 import axios from 'axios';
 
 // Configuration
+
+// اگر خواستی دوباره روی لوکال با Vite کار کنی، می‌توانی این خط را فعال کنی:
+// const API_BASE_URL = window.BACKEND_URL || '/api';
+
 // در حالت استقرار (Production) از بک‌اند روی PythonAnywhere استفاده می‌کنیم
 // اگر بعداً خواستی موقتاً بک‌اند دیگری تست کنی، فقط این URL را عوض کن
 const API_BASE_URL = 'https://navid190.pythonanywhere.com/api';
+
 let currentLanguage = 'en';
 let currentTheme = 'light';
 let currentModel = null;
-let chatHistory = {}; // Store chat history by model
-let currentConversation = []; // Current active conversation
-
 // DOM Elements
 const languageBtn = document.getElementById('languageBtn');
 const themeBtn = document.getElementById('themeBtn');
