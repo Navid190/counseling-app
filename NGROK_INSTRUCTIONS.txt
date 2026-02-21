@@ -1,0 +1,55 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║          📱 NGROK MOBILE ACCESS INSTRUCTIONS                ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+STEP 1: Copy Backend ngrok URL
+═══════════════════════════════════════════════════════════════
+Look at the "NAG AI - ngrok Backend" window.
+
+Find the line that says:
+   Forwarding: https://xxxxx.ngrok-free.dev -> http://localhost:5174
+
+Copy ONLY the https URL: https://xxxxx.ngrok-free.dev
+
+
+STEP 2: Update Frontend Configuration
+═══════════════════════════════════════════════════════════════
+Open a NEW command prompt and run:
+
+   cd C:\xampp\htdocs\counseling-app
+   UPDATE_NGROK_URL.bat
+
+When prompted, paste the backend URL you copied.
+
+
+STEP 3: Get Frontend ngrok URL
+═══════════════════════════════════════════════════════════════
+Look at the "NAG AI - ngrok Frontend" window.
+
+Find the line that says:
+   Forwarding: https://yyyyy.ngrok-free.dev -> http://localhost:5173
+
+Copy this URL: https://yyyyy.ngrok-free.dev
+
+
+STEP 4: Access on Mobile
+═══════════════════════════════════════════════════════════════
+Open your mobile browser and go to:
+   https://yyyyy.ngrok-free.dev
+
+(Use the frontend URL from Step 3)
+
+
+✅ DONE! Your NAG AI app is now accessible on mobile!
+
+═══════════════════════════════════════════════════════════════
+
+NOTES:
+• Keep all windows open while using the app
+• ngrok URLs change when you restart
+• If URLs change, run UPDATE_NGROK_URL.bat again
+• For quick testing without mobile, just use http://localhost:5173
+
+═══════════════════════════════════════════════════════════════

@@ -1,0 +1,41 @@
+{
+  "name": "NAG Counseling App",
+  "short_name": "NAG Counselor",
+  "description": "AI School Counseling Application with 4 specialized models",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#ffd700",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Tutoring",
+      "short_name": "Tutoring",
+      "description": "Open Tutoring Assistant",
+      "url": "/?model=tutoring",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Academic Counseling",
+      "short_name": "Academic",
+      "description": "Open Academic Counselor",
+      "url": "/?model=academic_counseling",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

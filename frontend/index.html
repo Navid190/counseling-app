@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AI School Counseling Application with 4 specialized models">
+    <meta name="theme-color" content="#ffd700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NAG Counselor">
+    <title>AI Counseling App - NAG School Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Logo and Controls -->
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="rotating-sphere">
+                    <div class="sphere"></div>
+                </div>
+                <h1 class="app-title" data-en="AI School Counseling" data-fa="مشاور هوش مصنوعی مدرسه">AI School Counseling</h1>
+            </div>
+            
+            <div class="controls">
+                <!-- Language Switcher -->
+                <button class="control-btn language-btn" id="languageBtn" title="Switch Language">
+                    <span class="lang-icon">EN</span>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button class="control-btn theme-btn" id="themeBtn" title="Toggle Theme">
+                    <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Model Selection Circles -->
+        <div class="models-container" id="modelsContainer">
+            <div class="model-circle" data-model="tutoring">
+                <div class="golden-ring"></div>
+                <div class="circle-content">
+                    <div class="icon">📚</div>
+                    <div class="label" data-en="Tutoring" data-fa="آموزش خصوصی">Tutoring</div>
+                </div>
+            </div>
+
+            <div class="model-circle" data-model="academic_counseling">
+                <div class="golden-ring"></div>
+                <div class="circle-content">
+                    <div class="icon">🎓</div>
+                    <div class="label" data-en="Academic Counseling" data-fa="مشاوره تحصیلی">Academic Counseling</div>
+                </div>
+            </div>
+
+            <div class="model-circle" data-model="nutrition_health">
+                <div class="golden-ring"></div>
+                <div class="circle-content">
+                    <div class="icon">🥗</div>
+                    <div class="label" data-en="Nutrition & Health" data-fa="تغذیه و سلامت">Nutrition & Health</div>
+                </div>
+            </div>
+
+            <div class="model-circle" data-model="sports">
+                <div class="golden-ring"></div>
+                <div class="circle-content">
+                    <div class="icon">⚽</div>
+                    <div class="label" data-en="Sports" data-fa="ورزش">Sports</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-interface" id="chatInterface">
+            <div class="chat-header">
+                <h2 id="chatTitle">Select a Model</h2>
+                <button class="close-btn" id="closeChat">✕</button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages"></div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." data-en-placeholder="Type your message..." data-fa-placeholder="پیام خود را تایپ کنید...">
+                <button id="sendBtn" class="send-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- API Status Panel -->
+        <div class="api-status" id="apiStatus">
+            <button class="status-toggle" id="statusToggle">API Status</button>
+            <div class="status-content" id="statusContent">
+                <div class="status-item">
+                    <span>Google AI Studio:</span>
+                    <span id="googleStatus" class="status-indicator">Testing...</span>
+                </div>
+                <div class="status-item">
+                    <span>Cerebras Cloud:</span>
+                    <span id="cerebrasStatus" class="status-indicator">Testing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration for Mobile/ngrok -->
+    <script>
+        // For LOCAL development: Leave this commented out (uses Vite proxy)
+        // For MOBILE/ngrok: Uncomment and set your ngrok backend URL
+        // // window.BACKEND_URL = 'https://YOUR-BACKEND-URL.ngrok.io/api';
+        
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show install button/banner
+            showInstallPrompt();
+        });
+        
+        function showInstallPrompt() {
+            const installBanner = document.createElement('div');
+            installBanner.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ffd700,#ffed4e);padding:15px 25px;border-radius:25px;box-shadow:0 4px 15px rgba(255,215,0,0.3);z-index:10000;display:flex;gap:15px;align-items:center;animation:slideDown 0.3s ease;';
+            installBanner.innerHTML = `
+                <span style="color:#2c3e50;font-weight:600;">📱 Install NAG Counselor App</span>
+                <button onclick="installApp()" style="background:#2c3e50;color:#ffd700;border:none;padding:8px 16px;border-radius:15px;cursor:pointer;font-weight:600;">Install</button>
+                <button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:#2c3e50;cursor:pointer;font-size:1.2rem;">✕</button>
+            `;
+            document.body.appendChild(installBanner);
+        }
+        
+        window.installApp = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                deferredPrompt = null;
+                document.querySelector('[style*="slideDown"]')?.remove();
+            }
+        };
+    </script>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+

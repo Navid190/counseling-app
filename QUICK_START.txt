@@ -1,0 +1,70 @@
+AI SCHOOL COUNSELING APPLICATION - QUICK START GUIDE
+================================================================
+
+PREREQUISITES:
+--------------
+✓ Python 3.8+ installed
+✓ Node.js 16+ installed
+✓ ngrok downloaded (optional, for mobile testing)
+
+INSTALLATION:
+-------------
+1. Run: TEST_INSTALLATION.bat
+   This will install all dependencies for backend and frontend
+
+RUNNING THE APPLICATION:
+------------------------
+2. Run: RUN_APP.bat
+   This will start both backend and frontend servers
+   
+   Backend URL: http://localhost:5174
+   Frontend URL: http://localhost:5173
+
+MOBILE TESTING (OPTIONAL):
+--------------------------
+3. Run: NGROK_SETUP.bat
+   This will create ngrok tunnels for mobile access
+   
+   IMPORTANT: Update frontend/app.js line 4 with your ngrok backend URL:
+   const API_BASE_URL = 'https://your-ngrok-url/api';
+
+FEATURES:
+---------
+✓ 4 AI Models: Tutoring, Academic Counseling, Nutrition & Health, Sports
+✓ Bilingual: English and Persian (فارسی)
+✓ Day/Night Theme Toggle
+✓ Beautiful circular UI with golden ring light effects
+✓ Rotating 3D sphere logo
+✓ API key testing (Google AI Studio, Cerebras Cloud)
+
+USAGE:
+------
+1. Open http://localhost:5173 in your browser
+2. Click on one of the 4 circular model buttons
+3. Start chatting with the AI assistant
+4. Use the EN/FA button to switch languages
+5. Use the sun/moon button to toggle theme
+6. Check API Status in bottom-right corner
+
+BUILDING FOR PRODUCTION:
+------------------------
+cd frontend
+npm run build
+
+Output will be in frontend/dist/
+
+API KEYS:
+---------
+All API keys are configured in backend/main.py and listed in API_KEYS.txt
+The app will test them automatically on startup.
+
+TROUBLESHOOTING:
+----------------
+- If backend fails: Check that port 5174 is not in use
+- If frontend fails: Check that port 5173 is not in use
+- If API errors: Check your internet connection and API keys
+- For mobile: Make sure ngrok is installed and path is correct
+
+SUPPORT:
+--------
+Check the README.md file for detailed documentation.

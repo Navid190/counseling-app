@@ -1,0 +1,29 @@
+=============================================
+   SCAN THIS QR CODE ON YOUR TABLET
+=============================================
+
+Your App URL:
+https://gleg-deacon-aulic.ngrok-free.dev
+
+Generate QR Code:
+1. Visit: https://www.qr-code-generator.com/
+2. Paste the URL above
+3. Scan with your tablet camera
+
+Or simply type the URL in your tablet browser!
+
+=============================================
+   FEATURES AVAILABLE:
+=============================================
+
+🎯 4 AI Counseling Models:
+   - Tutoring
+   - Academic Counseling  
+   - Nutrition & Health
+   - Sports
+
+🌐 Language: English & Persian (فارسی)
+🌙 Theme: Day/Night mode
+📱 Mobile Optimized UI
+
+=============================================

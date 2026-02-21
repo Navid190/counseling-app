@@ -1,0 +1,142 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║     🚀 COMPLETE STARTUP GUIDE - COPY & PASTE                ║
+║     NAG AI Smart School Application                         ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════
+TERMINAL 1: BACKEND SERVER
+═══════════════════════════════════════════════════════════════
+
+Press Win + R
+Type: cmd
+Press Enter
+
+Copy and paste this:
+
+cd C:\xampp\htdocs\counseling-app
+START_BACKEND.bat
+
+✓ Wait until you see: "Running on http://0.0.0.0:5174"
+✓ Keep this window OPEN
+
+
+═══════════════════════════════════════════════════════════════
+TERMINAL 2: FRONTEND SERVER
+═══════════════════════════════════════════════════════════════
+
+Press Win + R (again)
+Type: cmd
+Press Enter
+
+Copy and paste this:
+
+cd C:\xampp\htdocs\counseling-app
+START_FRONTEND.bat
+
+✓ Wait until you see: "Local: http://localhost:5173/"
+✓ Keep this window OPEN
+
+
+═══════════════════════════════════════════════════════════════
+TERMINAL 3: NGROK BACKEND (For Mobile)
+═══════════════════════════════════════════════════════════════
+
+Press Win + R (again)
+Type: cmd
+Press Enter
+
+Copy and paste this:
+
+cd C:\ngrok\ngrok-v3-stable-windows-amd64
+ngrok http 5174
+
+✓ You will see: Forwarding https://xxxxx.ngrok.io -> localhost:5174
+✓ COPY that https://xxxxx.ngrok.io URL
+✓ Keep this window OPEN
+
+
+═══════════════════════════════════════════════════════════════
+TERMINAL 4: UPDATE FRONTEND CONFIG
+═══════════════════════════════════════════════════════════════
+
+Press Win + R (again)
+Type: cmd
+Press Enter
+
+Copy and paste this:
+
+cd C:\xampp\htdocs\counseling-app
+SETUP_NGROK_MOBILE.bat
+
+When it asks, PASTE the ngrok backend URL you copied from Terminal 3
+
+✓ It will update the configuration
+✓ You can close this window after it's done
+
+
+═══════════════════════════════════════════════════════════════
+TERMINAL 5: NGROK FRONTEND (For Mobile)
+═══════════════════════════════════════════════════════════════
+
+Press Win + R (again)
+Type: cmd
+Press Enter
+
+Copy and paste this:
+
+cd C:\ngrok\ngrok-v3-stable-windows-amd64
+ngrok http 5173
+
+✓ You will see: Forwarding https://yyyyy.ngrok.io -> localhost:5173
+✓ COPY that https://yyyyy.ngrok.io URL
+✓ Keep this window OPEN
+
+
+═══════════════════════════════════════════════════════════════
+🎉 ACCESS THE APP
+═══════════════════════════════════════════════════════════════
+
+On Computer:
+   http://localhost:5173
+
+On Mobile (same WiFi):
+   http://YOUR-PC-IP:5173
+   
+On Mobile (anywhere with ngrok):
+   https://yyyyy.ngrok.io (the URL from Terminal 5)
+
+
+═══════════════════════════════════════════════════════════════
+📋 SUMMARY - YOU SHOULD HAVE 5 WINDOWS OPEN
+═══════════════════════════════════════════════════════════════
+
+Terminal 1: Backend Server (5174)
+Terminal 2: Frontend Server (5173)
+Terminal 3: ngrok Backend (keep open)
+Terminal 4: Config Update (can close after done)
+Terminal 5: ngrok Frontend (keep open)
+
+
+═══════════════════════════════════════════════════════════════
+⚠️ IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════
+
+• Keep all terminals OPEN while using the app
+• ngrok URLs change each time you restart ngrok
+• If you restart ngrok, run SETUP_NGROK_MOBILE.bat again
+• For quick testing, just run Terminals 1 & 2 (no ngrok needed)
+
+
+═══════════════════════════════════════════════════════════════
+🛑 TO STOP THE APP
+═══════════════════════════════════════════════════════════════
+
+Just close all terminal windows
+
+To restart: Follow this guide again from the top
+
+
+═══════════════════════════════════════════════════════════════

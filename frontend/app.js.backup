@@ -1,0 +1,256 @@
+import axios from 'axios';
+
+// Configuration
+const API_BASE_URL = ' http://127.0.0.1:4040  /api';
+let currentLanguage = 'en';
+let currentTheme = 'light';
+let currentModel = null;
+
+// DOM Elements
+const languageBtn = document.getElementById('languageBtn');
+const themeBtn = document.getElementById('themeBtn');
+const modelsContainer = document.getElementById('modelsContainer');
+const chatInterface = document.getElementById('chatInterface');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const closeChat = document.getElementById('closeChat');
+const chatTitle = document.getElementById('chatTitle');
+const statusToggle = document.getElementById('statusToggle');
+const statusContent = document.getElementById('statusContent');
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    initializeEventListeners();
+    testAPIKeys();
+    loadPreferences();
+});
+
+// Event Listeners
+function initializeEventListeners() {
+    // Language toggle
+    languageBtn.addEventListener('click', toggleLanguage);
+    
+    // Theme toggle
+    themeBtn.addEventListener('click', toggleTheme);
+    
+    // Model circles
+    const modelCircles = document.querySelectorAll('.model-circle');
+    modelCircles.forEach(circle => {
+        circle.addEventListener('click', (e) => {
+            const model = circle.dataset.model;
+            selectModel(model, circle);
+        });
+    });
+    
+    // Chat controls
+    closeChat.addEventListener('click', closeChat_handler);
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    
+    // API Status toggle
+    statusToggle.addEventListener('click', () => {
+        statusContent.classList.toggle('active');
+    });
+}
+
+// Language Toggle
+function toggleLanguage() {
+    currentLanguage = currentLanguage === 'en' ? 'fa' : 'en';
+    languageBtn.querySelector('.lang-icon').textContent = currentLanguage === 'en' ? 'FA' : 'EN';
+    
+    // Update direction
+    document.body.setAttribute('dir', currentLanguage === 'fa' ? 'rtl' : 'ltr');
+    
+    // Update all translatable elements
+    document.querySelectorAll('[data-en][data-fa]').forEach(el => {
+        el.textContent = el.dataset[currentLanguage];
+    });
+    
+    // Update input placeholder
+    chatInput.placeholder = chatInput.dataset[`${currentLanguage}Placeholder`];
+    
+    savePreferences();
+}
+
+// Theme Toggle
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    savePreferences();
+}
+
+// Model Selection
+function selectModel(model, circleElement) {
+    currentModel = model;
+    
+    // Add clicked animation
+    circleElement.classList.add('clicked');
+    setTimeout(() => circleElement.classList.remove('clicked'), 600);
+    
+    // Update active state
+    document.querySelectorAll('.model-circle').forEach(c => c.classList.remove('active'));
+    circleElement.classList.add('active');
+    
+    // Update chat title
+    const modelTitles = {
+        'tutoring': { en: 'Tutoring Assistant', fa: 'دستیار آموزش خصوصی' },
+        'academic_counseling': { en: 'Academic Counselor', fa: 'مشاور تحصیلی' },
+        'nutrition_health': { en: 'Health & Nutrition Guide', fa: 'راهنمای تغذیه و سلامت' },
+        'sports': { en: 'Sports Coach', fa: 'مربی ورزشی' }
+    };
+    
+    chatTitle.textContent = modelTitles[model][currentLanguage];
+    
+    // Open chat interface
+    chatInterface.classList.add('active');
+    
+    // Clear previous messages
+    chatMessages.innerHTML = '';
+    
+    // Add welcome message
+    const welcomeMessages = {
+        'tutoring': {
+            en: 'Hello! I\'m your tutoring assistant. How can I help you with your studies today?',
+            fa: 'سلام! من دستیار آموزش خصوصی شما هستم. امروز چگونه می‌توانم به شما در درس‌ها کمک کنم؟'
+        },
+        'academic_counseling': {
+            en: 'Welcome! I\'m here to help with academic planning and career guidance. What would you like to discuss?',
+            fa: 'خوش آمدید! من اینجا هستم تا در برنامه‌ریزی تحصیلی و راهنمایی شغلی کمک کنم. چه موضوعی را می‌خواهید بحث کنیم؟'
+        },
+        'nutrition_health': {
+            en: 'Hi! I\'m your health and nutrition guide. Let\'s talk about healthy living!',
+            fa: 'سلام! من راهنمای تغذیه و سلامت شما هستم. بیایید در مورد زندگی سالم صحبت کنیم!'
+        },
+        'sports': {
+            en: 'Hey! I\'m your sports coach. Ready to talk about fitness and athletics?',
+            fa: 'سلام! من مربی ورزشی شما هستم. آماده صحبت در مورد تناسب اندام و ورزش هستید؟'
+        }
+    };
+    
+    addMessage(welcomeMessages[model][currentLanguage], 'ai');
+    
+    // Focus input
+    chatInput.focus();
+}
+
+// Send Message
+async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message || !currentModel) return;
+    
+    // Add user message
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message ai typing';
+    typingDiv.textContent = currentLanguage === 'en' ? 'Typing...' : 'در حال تایپ...';
+    typingDiv.id = 'typing-indicator';
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    try {
+        const response = await axios.post(`${API_BASE_URL}/chat`, {
+            message: message,
+            model: currentModel,
+            language: currentLanguage,
+            provider: 'google_ai'
+        });
+        
+        // Remove typing indicator
+        document.getElementById('typing-indicator')?.remove();
+        
+        if (response.data.success) {
+            addMessage(response.data.response, 'ai');
+        } else {
+            addMessage(`Error: ${response.data.error}`, 'ai');
+        }
+    } catch (error) {
+        document.getElementById('typing-indicator')?.remove();
+        const errorMsg = currentLanguage === 'en' 
+            ? 'Sorry, there was an error connecting to the AI service.' 
+            : 'متأسفم، خطایی در اتصال به سرویس هوش مصنوعی رخ داد.';
+        addMessage(errorMsg, 'ai');
+        console.error('Error:', error);
+    }
+}
+
+// Add Message to Chat
+function addMessage(text, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Close Chat
+function closeChat_handler() {
+    chatInterface.classList.remove('active');
+    document.querySelectorAll('.model-circle').forEach(c => c.classList.remove('active'));
+    currentModel = null;
+}
+
+// Test API Keys
+async function testAPIKeys() {
+    const googleStatus = document.getElementById('googleStatus');
+    const cerebrasStatus = document.getElementById('cerebrasStatus');
+    
+    googleStatus.textContent = currentLanguage === 'en' ? 'Testing...' : 'در حال تست...';
+    cerebrasStatus.textContent = currentLanguage === 'en' ? 'Testing...' : 'در حال تست...';
+    googleStatus.className = 'status-indicator testing';
+    cerebrasStatus.className = 'status-indicator testing';
+    
+    try {
+        const response = await axios.get(`${API_BASE_URL}/test-keys`);
+        
+        // Update Google AI status
+        if (response.data.google_ai.working) {
+            googleStatus.textContent = '✓ ' + (currentLanguage === 'en' ? 'Working' : 'فعال');
+            googleStatus.className = 'status-indicator working';
+        } else {
+            googleStatus.textContent = '✗ ' + (currentLanguage === 'en' ? 'Failed' : 'خطا');
+            googleStatus.className = 'status-indicator failed';
+        }
+        
+        // Update Cerebras status
+        if (response.data.cerebras.working) {
+            cerebrasStatus.textContent = '✓ ' + (currentLanguage === 'en' ? 'Working' : 'فعال');
+            cerebrasStatus.className = 'status-indicator working';
+        } else {
+            cerebrasStatus.textContent = '✗ ' + (currentLanguage === 'en' ? 'Failed' : 'خطا');
+            cerebrasStatus.className = 'status-indicator failed';
+        }
+    } catch (error) {
+        googleStatus.textContent = '✗ ' + (currentLanguage === 'en' ? 'Connection Error' : 'خطای اتصال');
+        cerebrasStatus.textContent = '✗ ' + (currentLanguage === 'en' ? 'Connection Error' : 'خطای اتصال');
+        googleStatus.className = 'status-indicator failed';
+        cerebrasStatus.className = 'status-indicator failed';
+        console.error('API test error:', error);
+    }
+}
+
+// Save/Load Preferences
+function savePreferences() {
+    localStorage.setItem('counseling_app_prefs', JSON.stringify({
+        language: currentLanguage,
+        theme: currentTheme
+    }));
+}
+
+function loadPreferences() {
+    const prefs = localStorage.getItem('counseling_app_prefs');
+    if (prefs) {
+        const { language, theme } = JSON.parse(prefs);
+        if (language && language !== currentLanguage) {
+            toggleLanguage();
+        }
+        if (theme && theme !== currentTheme) {
+            toggleTheme();
+        }
+    }
+}

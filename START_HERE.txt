@@ -1,0 +1,224 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║     AI SCHOOL COUNSELING APPLICATION                        ║
+║     Ready-to-Deploy Complete Solution                       ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+📚 WHAT YOU HAVE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Complete AI counseling app with 4 models:
+   • 📚 Tutoring - Educational assistance
+   • 🎓 Academic Counseling - Study planning & career guidance  
+   • 🥗 Nutrition & Health - Wellness advice
+   • ⚽ Sports - Fitness coaching
+
+✅ Beautiful UI Features:
+   • 4 circular model buttons with golden ring light effects
+   • Rotating 3D sphere logo
+   • Click animations with shine effects
+   • Language toggle: English ↔ Persian (فارسی)
+   • Theme toggle: Day ☀️ ↔ Night 🌙
+   • Mobile-responsive design
+
+✅ Backend (Python Flask):
+   • Google AI Studio integration (Gemini Pro)
+   • Cerebras Cloud integration (Llama 3.1)
+   • Automatic fallback between providers
+   • API testing built-in
+
+✅ Frontend (Vite + Vanilla JS):
+   • Fast, modern development
+   • Production build support
+   • ngrok-ready for mobile testing
+
+
+🚀 QUICK START (3 STEPS):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: Install Everything
+   Double-click: TEST_INSTALLATION.bat
+   ⏱️ Takes: 2-3 minutes
+
+STEP 2: Run the Application
+   Double-click: RUN_APP.bat
+   🌐 Opens: http://localhost:5173
+
+STEP 3: Test on Mobile (Optional)
+   Double-click: NGROK_SETUP.bat
+   📱 Get ngrok URL for mobile access
+
+
+📖 DETAILED GUIDES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📄 QUICK_START.txt          ← Read this for basics
+📄 DEPLOYMENT_GUIDE.md       ← Complete deployment steps
+📄 PROJECT_STRUCTURE.txt     ← Understanding the files
+📄 README.md                 ← Full documentation
+
+
+🔑 API KEYS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your API keys are already configured in backend/main.py:
+
+✓ Google AI Studio: AIzaSyA9Pi7tw_4GcyzThAqcaHbDCxYO5WvgFWk
+✓ Cerebras Cloud:   csk-5r8kkcr9chkptvx4cytphk9m3ypcfx5jnnryddhm6kfr6559
+
+To test them:
+   cd backend
+   RUN_API_TEST.bat
+
+
+📁 PROJECT FILES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+counseling-app/
+├── 🚀 RUN_APP.bat               ← START HERE
+├── 🧪 TEST_INSTALLATION.bat
+├── 📱 NGROK_SETUP.bat
+├── backend/
+│   ├── main.py                   ← Flask server + AI integration
+│   ├── requirements.txt
+│   ├── test_api_keys.py
+│   └── RUN_API_TEST.bat
+├── frontend/
+│   ├── index.html                ← Main UI
+│   ├── style.css                 ← Styling + animations
+│   ├── app.js                    ← Logic + API calls
+│   ├── package.json
+│   └── BUILD_FOR_MOBILE.bat
+└── images/                       ← Logo & icons
+
+
+🎯 HOW TO USE THE APP:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Click one of the 4 circular model buttons
+   → Golden ring lights up with pulse animation
+   → Chat interface slides up from bottom
+
+2. Type your question and press Enter
+   → AI responds based on selected model
+   → Conversation history maintained
+
+3. Use controls at top:
+   → EN/FA button: Switch languages
+   → ☀️/🌙 button: Toggle theme
+
+4. Check API Status (bottom-right)
+   → Shows which AI providers are working
+
+
+📱 MOBILE TESTING:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+METHOD 1: Using ngrok (Internet access)
+   1. Run: NGROK_SETUP.bat
+   2. Copy backend ngrok URL
+   3. Edit frontend/app.js line 4 with backend URL
+   4. Use frontend ngrok URL on mobile
+
+METHOD 2: Local Network (Same WiFi)
+   1. Find your PC IP: ipconfig
+   2. On mobile: http://YOUR-IP:5173
+
+
+🏗️ BUILDING FOR PRODUCTION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+cd frontend
+BUILD_FOR_MOBILE.bat
+
+Output: frontend/dist/
+Deploy this folder to any web server!
+
+
+⚙️ CONFIGURATION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Backend Port: 5174
+   Change in: backend/main.py (last line)
+
+Frontend Port: 5173
+   Change in: frontend/vite.config.js
+
+API URL:
+   Change in: frontend/app.js (line 4)
+
+
+🔧 TROUBLESHOOTING:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: "Port already in use"
+Solution: Change port in config files (see above)
+
+Problem: "Module not found" 
+Solution: Run TEST_INSTALLATION.bat again
+
+Problem: "API connection failed"
+Solution: 
+   1. Run: backend/RUN_API_TEST.bat
+   2. Check internet connection
+   3. Verify API keys
+
+Problem: "CORS error"
+Solution: Backend has CORS enabled - check API_BASE_URL
+
+
+📊 FEATURES CHECKLIST:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+UI/UX:
+   ✅ 4 circular model buttons
+   ✅ Golden ring light with pulse animation  
+   ✅ Shine effect on click
+   ✅ Rotating 3D sphere logo
+   ✅ Language switcher (EN ↔ FA)
+   ✅ Theme toggle (Light ↔ Dark)
+   ✅ Responsive mobile design
+
+Backend:
+   ✅ Flask REST API
+   ✅ Google AI Studio integration
+   ✅ Cerebras Cloud integration
+   ✅ Automatic provider fallback
+   ✅ Bilingual context for each model
+
+Frontend:
+   ✅ Modern Vite build system
+   ✅ Chat interface with animations
+   ✅ Real-time AI responses
+   ✅ API status monitoring
+   ✅ Preference persistence
+
+
+💡 TIPS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Keep both backend and frontend running simultaneously
+• Test API keys before first use (RUN_API_TEST.bat)
+• Use Chrome/Edge DevTools (F12) for debugging
+• For production, build frontend and deploy dist/ folder
+• ngrok tunnels expire - restart NGROK_SETUP.bat if needed
+
+
+📞 SUPPORT FILES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+API_KEYS.txt              - All API keys reference
+DEPLOYMENT_GUIDE.md       - Complete deployment instructions  
+PROJECT_STRUCTURE.txt     - File organization explained
+QUICK_START.txt          - Quick reference guide
+README.md                - Full documentation
+
+
+═══════════════════════════════════════════════════════════════
+
+Ready to start? Double-click: RUN_APP.bat
+
+Questions? Check QUICK_START.txt or DEPLOYMENT_GUIDE.md
+
+═══════════════════════════════════════════════════════════════

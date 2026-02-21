@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NAG AI - New Path to Growth</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF6B6B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+</head>
+<body>
+    <div id="app">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
+            <div class="welcome-container">
+                <div class="welcome-logo">
+                    <div class="logo-glow">
+                        <img src="logo.svg" alt="NAG AI Logo" id="appLogo">
+                        <div id="logoFallback" class="logo-fallback" style="display:none;">🌟</div>
+                    </div>
+                    <h1 class="app-title">NAG AI</h1>
+                    <p class="brand-name">New Path to Growth</p>
+                </div>
+                <p class="welcome-tagline" id="welcomeTagline">هوشمندانه رشد کنید</p>
+                
+                <form id="registrationForm" class="registration-form">
+                    <div class="form-group">
+                        <label for="studentName" id="labelName">نام دانش‌آموز</label>
+                        <input type="text" id="studentName" placeholder="نام خود را وارد کنید" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentMobile" id="labelMobile">شماره موبایل</label>
+                        <input type="tel" id="studentMobile" placeholder="شماره موبایل را وارد کنید" required pattern="09[0-9]{9}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentAge" id="labelAge">سن</label>
+                        <input type="number" id="studentAge" placeholder="سن خود را وارد کنید" min="6" max="25" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>✨</span> <span id="startBtn">شروع کنید</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboardScreen" class="screen">
+            <!-- Header -->
+            <header class="mobile-header">
+                <div class="header-left">
+                    <button class="menu-btn" id="menuBtn">☰</button>
+                </div>
+                <div class="header-center">
+                    <h1 id="dashboardTitle">داشبورد</h1>
+                </div>
+                <div class="header-right">
+                    <button class="settings-btn" id="settingsBtn">⚙️</button>
+                </div>
+            </header>
+
+            <!-- Theme Toggle Button -->
+            <div class="theme-control">
+                <button class="theme-btn" id="themeBtn" title="تغییر تم">
+                    🎨
+                </button>
+            </div>
+
+            <!-- Language Selector (Fixed) -->
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="fa">🇮🇷 فارسی</button>
+                <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+                <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+            </div>
+
+            <!-- Quick Stats -->
+            <section class="quick-stats">
+                <div class="stat-card balance">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="statBalance">موجودی کل</span>
+                        <span class="stat-value" id="totalBalance">۰ تومان</span>
+                    </div>
+                </div>
+                <div class="stat-card income">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="statIncome">درآمد ماهانه</span>
+                        <span class="stat-value" id="totalIncome">۰ تومان</span>
+                    </div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-info">
+                        <span class="stat-label" id="statExpense">هزینه‌ها</span>
+                        <span class="stat-value" id="totalExpenses">۰ تومان</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Actions Grid with Glass Keys -->
+            <section class="main-actions">
+                <h2 id="mainActionsTitle">عملیات اصلی</h2>
+                <div class="actions-grid">
+                    <button class="glass-card action-card" data-action="chat-quantum" data-glow="nutrition">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">🥗</span>
+                        <span class="action-label" id="actionNutrition">تغذیه و سلامت</span>
+                    </button>
+                    <button class="glass-card action-card" data-action="chat-quantum" data-glow="sports">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">🏃</span>
+                        <span class="action-label" id="actionSports">ورزش و تناسب</span>
+                    </button>
+                    <button class="glass-card action-card" data-action="chat-quantum" data-glow="academic">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">📚</span>
+                        <span class="action-label" id="actionAcademic">مشاوره تحصیلی</span>
+                    </button>
+                    <button class="glass-card action-card" data-action="chat-quantum" data-glow="planning">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">📋</span>
+                        <span class="action-label" id="actionPlanning">برنامه‌ریزی درسی</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Secondary Actions -->
+            <section class="secondary-actions">
+                <div class="actions-row">
+                    <button class="glass-card-small action-card" data-action="notebook">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">📓</span>
+                        <span class="action-label" id="actionNotebook">دفترچه اهداف</span>
+                    </button>
+                    <button class="glass-card-small action-card" data-action="mobile-charge">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">📱</span>
+                        <span class="action-label" id="actionRecharge">شارژ موبایل</span>
+                    </button>
+                    <button class="glass-card-small action-card" data-action="finance">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">💳</span>
+                        <span class="action-label" id="actionFinance">امور مالی</span>
+                    </button>
+                    <button class="glass-card-small action-card" data-action="gallery">
+                        <span class="card-glow"></span>
+                        <span class="action-icon">🖼️</span>
+                        <span class="action-label" id="actionGallery">گالری</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section class="recent-section">
+                <div class="section-header">
+                    <h2 id="recentTitle">فعالیت‌های اخیر</h2>
+                    <button class="btn-text" id="viewAllBtn">مشاهده همه →</button>
+                </div>
+                <div class="transactions-list" id="transactionsList">
+                    <div class="empty-state">
+                        <p id="emptyStateText">هنوز فعالیتی ثبت نشده است</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Quantum Chat Modal -->
+        <div id="quantumChatModal" class="modal">
+            <div class="modal-content chat-modal">
+                <div class="modal-header">
+                    <h2 id="chatTitle">💬 چت کوانتومی</h2>
+                    <button class="modal-close" data-close="quantumChatModal">✕</button>
+                </div>
+                
+                <!-- Chat Type Selection -->
+                <div class="quantum-tabs" id="quantumTabs">
+                    <button class="quantum-tab active" data-type="nutrition">
+                        <span class="tab-icon">🥗</span>
+                        <span id="tabNutrition">تغذیه</span>
+                    </button>
+                    <button class="quantum-tab" data-type="sports">
+                        <span class="tab-icon">🏃</span>
+                        <span id="tabSports">ورزش</span>
+                    </button>
+                    <button class="quantum-tab" data-type="academic">
+                        <span class="tab-icon">📚</span>
+                        <span id="tabAcademic">تحصیلی</span>
+                    </button>
+                    <button class="quantum-tab" data-type="planning">
+                        <span class="tab-icon">📋</span>
+                        <span id="tabPlanning">برنامه‌ریزی</span>
+                    </button>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            <div class="message-avatar">🌟</div>
+                            <div class="message-content">
+                                <p id="chatWelcome">سلام عزیزم! 👋 من دستیار هوشمند تو هستم. چطور می‌تونم کمکت کنم؟</p>
+                            </div>
+                            <span class="message-time">همین حالا</span>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-questions" id="quickQuestions">
+                        <button class="quick-question" data-question="چه تغذیه سالمی پیشنهاد میکنی؟">🥗 تغذیه سالم</button>
+                        <button class="quick-question" data-question="برنامه ورزشی چی پیشنهاد میکنی؟">🏃 برنامه ورزشی</button>
+                        <button class="quick-question" data-question="چطور درس بخوانم؟">📚 روش مطالعه</button>
+                        <button class="quick-question" data-question="چطور برنامه‌ریزی کنم؟">📋 برنامه‌ریزی</button>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="سوال خود را بنویسید...">
+                        <button class="send-btn" id="sendChatBtn">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notebook Modal -->
+        <div id="notebookModal" class="modal">
+            <div class="modal-content notebook-modal">
+                <div class="modal-header">
+                    <h2>📓 دفترچه اهداف</h2>
+                    <button class="modal-close" data-close="notebookModal">✕</button>
+                </div>
+                
+                <div class="notebook-container">
+                    <div class="notebook-tabs">
+                        <button class="notebook-tab active" data-tab="goals">🎯 اهداف</button>
+                        <button class="notebook-tab" data-tab="notes">📝 یادداشت‌ها</button>
+                        <button class="notebook-tab" data-tab="achievements">🏆 دستاوردها</button>
+                    </div>
+                    
+                    <div class="notebook-content">
+                        <div class="goal-input-section">
+                            <textarea id="goalInput" placeholder="هدف یا یادداشت خود را بنویسید..."></textarea>
+                            <button class="btn btn-primary" id="saveGoalBtn">💾 ذخیره</button>
+                        </div>
+                        
+                        <div class="ai-motivation" id="aiMotivation" style="display:none;">
+                            <div class="motivation-header">
+                                <span class="ai-icon">🤖</span>
+                                <span>پیام هوش مصنوعی</span>
+                            </div>
+                            <p id="motivationText"></p>
+                        </div>
+                        
+                        <div class="goals-list" id="goalsList">
+                            <!-- Goals will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Recharge Modal -->
+        <div id="rechargeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📱 شارژ موبایل</h2>
+                    <button class="modal-close" data-close="rechargeModal">✕</button>
+                </div>
+                
+                <div class="operator-selection">
+                    <h3>انتخاب اپراتور</h3>
+                    <div class="operators-grid">
+                        <button class="operator-btn" data-operator="irancell">
+                            <span class="operator-logo">📶</span>
+                            <span>ایرانسل</span>
+                        </button>
+                        <button class="operator-btn" data-operator="mtn">
+                            <span class="operator-logo">📡</span>
+                            <span>همراه اول</span>
+                        </button>
+                        <button class="operator-btn" data-operator="rightel">
+                            <span class="operator-logo">📱</span>
+                            <span>رایتل</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="recharge-form">
+                    <div class="form-group">
+                        <label>شماره موبایل</label>
+                        <input type="tel" id="rechargeNumber" placeholder="09123456789">
+                    </div>
+                    
+                    <div class="amount-selection">
+                        <h3>مبلغ شارژ (تومان)</h3>
+                        <div class="amount-grid">
+                            <button class="amount-btn" data-amount="20000">۲۰,۰۰۰</button>
+                            <button class="amount-btn" data-amount="50000">۵۰,۰۰۰</button>
+                            <button class="amount-btn" data-amount="100000">۱۰۰,۰۰۰</button>
+                            <button class="amount-btn" data-amount="200000">۲۰۰,۰۰۰</button>
+                            <button class="amount-btn" data-amount="500000">۵۰۰,۰۰۰</button>
+                            <button class="amount-btn custom" data-amount="custom">مبلغ دلخواه</button>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-amount-input" style="display: none;">
+                        <input type="number" id="customAmount" placeholder="مبلغ را وارد کنید">
+                    </div>
+                    
+                    <!-- Zarinpal Payment -->
+                    <div class="payment-section">
+                        <div class="nfc-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="nfcPayment">
+                                <span class="checkmark"></span>
+                                💳 پرداخت با NFC
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" id="rechargeBtn">
+                        💳 پرداخت با زرین‌پال
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finance Modal -->
+        <div id="financeModal" class="modal">
+            <div class="modal-content finance-modal">
+                <div class="modal-header">
+                    <h2>💳 امور مالی</h2>
+                    <button class="modal-close" data-close="financeModal">✕</button>
+                </div>
+                
+                <div class="finance-tabs">
+                    <button class="finance-tab active" data-tab="income">💰 درآمد ماهانه</button>
+                    <button class="finance-tab" data-tab="expenses">📊 هزینه‌ها</button>
+                    <button class="finance-tab" data-tab="assets">💎 دارایی‌ها</button>
+                </div>
+                
+                <!-- Income Section -->
+                <div class="finance-content" id="incomeSection">
+                    <div class="form-group">
+                        <label>مبلغ ماهانه (تومان)</label>
+                        <input type="number" id="monthlyIncome" placeholder="مبلغ را وارد کنید">
+                    </div>
+                    <div class="form-group">
+                        <label>منبع درآمد</label>
+                        <select id="incomeSource">
+                            <option value="parent">🎁 پدر و مادر</option>
+                            <option value="gift">🎁 هدیه</option>
+                            <option value="allowance">💵 کمک هزینه</option>
+                            <option value="other">📦 سایر</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="addIncomeBtn">➕ افزودن درآمد</button>
+                    
+                    <div class="income-list" id="incomeList">
+                        <!-- Income items will be rendered here -->
+                    </div>
+                </div>
+                
+                <!-- Expenses Section -->
+                <div class="finance-content" id="expensesSection" style="display:none;">
+                    <div class="form-group">
+                        <label>مبلغ (تومان)</label>
+                        <input type="number" id="expenseAmount" placeholder="مبلغ را وارد کنید">
+                    </div>
+                    <div class="form-group">
+                        <label>دسته‌بندی</label>
+                        <select id="expenseCategory">
+                            <option value="food">🍔 غذا</option>
+                            <option value="transport">🚗 حمل‌ونقل</option>
+                            <option value="shopping">🛍️ خرید</option>
+                            <option value="entertainment">🎬 سرگرمی</option>
+                            <option value="education">📚 آموزش</option>
+                            <option value="other">📦 سایر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>توضیحات</label>
+                        <input type="text" id="expenseDescription" placeholder="توضیحات">
+                    </div>
+                    <button class="btn btn-primary btn-block" id="addExpenseBtn">➕ افزودن هزینه</button>
+                    
+                    <div class="expenses-list" id="expensesList">
+                        <!-- Expense items will be rendered here -->
+                    </div>
+                </div>
+                
+                <!-- Assets Section -->
+                <div class="finance-content" id="assetsSection" style="display:none;">
+                    <div class="asset-summary">
+                        <div class="asset-card total">
+                            <span class="asset-label">کل دارایی</span>
+                            <span class="asset-value" id="totalAssets">۰ تومان</span>
+                        </div>
+                        <div class="asset-card saved">
+                            <span class="asset-label">پس‌انداز</span>
+                            <span class="asset-value" id="totalSaved">۰ تومان</span>
+                        </div>
+                    </div>
+                    
+                    <div class="savings-goals">
+                        <h3>🎯 اهداف پس‌انداز</h3>
+                        <div class="form-group">
+                            <label>هدف جدید</label>
+                            <input type="text" id="savingsGoal" placeholder="چه چیزی می‌خواهی؟">
+                        </div>
+                        <div class="form-group">
+                            <label>مبلغ هدف</label>
+                            <input type="number" id="savingsGoalAmount" placeholder="مبلغ">
+                        </div>
+                        <button class="btn btn-secondary" id="addSavingsGoalBtn">➕ افزودن هدف</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Modal -->
+        <div id="galleryModal" class="modal">
+            <div class="modal-content gallery-modal">
+                <div class="modal-header">
+                    <h2>🖼️ گالری</h2>
+                    <button class="modal-close" data-close="galleryModal">✕</button>
+                </div>
+                
+                <div class="gallery-tabs">
+                    <button class="gallery-tab active" data-tab="logo">🏷️ لوگو</button>
+                    <button class="gallery-tab" data-tab="photos">📷 عکس‌ها</button>
+                </div>
+                
+                <div class="gallery-content">
+                    <div class="logo-section" id="logoSection">
+                        <div class="logo-upload-area" id="logoUploadArea">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">📁</span>
+                                <p>لوگوی اپلیکیشن</p>
+                                <img src="logo.svg" alt="App Logo" id="galleryLogo" onerror="this.style.display='none'">
+                            </div>
+                            <input type="file" id="logoInput" accept="image/*" style="display:none;">
+                        </div>
+                    </div>
+                    
+                    <div class="photos-section" id="photosSection" style="display:none;">
+                        <div class="photo-grid" id="photoGrid">
+                            <p class="no-photos" id="noPhotos">عکسی وجود ندارد</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="panel">
+            <div class="panel-header">
+                <h2>⚙️ تنظیمات</h2>
+                <button class="panel-close" data-close="settingsPanel">✕</button>
+            </div>
+            
+            <div class="settings-content">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-icon">👤</span>
+                        <div>
+                            <h3>پروفایل دانش‌آموز</h3>
+                            <p id="profileInfo">اطلاعات شخصی</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn" id="editProfileBtn">✏️</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-icon">🎨</span>
+                        <div>
+                            <h3>تم و ظاهر</h3>
+                            <p>انتخاب تم و رنگ</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn" id="themeSettingsBtn">🎭</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-icon">🌐</span>
+                        <div>
+                            <h3>زبان</h3>
+                            <p id="currentLanguage">فارسی</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-icon">💾</span>
+                        <div>
+                            <h3>پشتیبان‌گیری</h3>
+                            <p>تهیه نسخه پشتیبان</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn">📥</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <span class="setting-icon">🔗</span>
+                        <div>
+                            <h3>اتصال به زرین‌پال</h3>
+                            <p>تنظیمات درگاه پرداخت</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn" id="zarinpalSettingsBtn">⚙️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Selection Modal -->
+        <div id="themeModal" class="modal">
+            <div class="modal-content theme-modal">
+                <div class="modal-header">
+                    <h2>🎨 انتخاب تم</h2>
+                    <button class="modal-close" data-close="themeModal">✕</button>
+                </div>
+                
+                <div class="theme-modes">
+                    <div class="theme-mode active" data-mode="auto">
+                        <span class="mode-icon">🔄</span>
+                        <span>حالت خودکار (۹ تم)</span>
+                    </div>
+                    <div class="theme-mode" data-mode="fixed">
+                        <span class="mode-icon">🔒</span>
+                        <span>حالت ثابت</span>
+                    </div>
+                </div>
+                
+                <div class="theme-colors" id="themeColors">
+                    <h3>تم‌های موجود</h3>
+                    <div class="color-grid">
+                        <button class="color-btn active" data-theme="1" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                            <span class="theme-name">۱</span>
+                        </button>
+                        <button class="color-btn" data-theme="2" style="background: linear-gradient(135deg, #4ECDC4, #7FEFE6);">
+                            <span class="theme-name">۲</span>
+                        </button>
+                        <button class="color-btn" data-theme="3" style="background: linear-gradient(135deg, #45B7D1, #7FCCE4);">
+                            <span class="theme-name">۳</span>
+                        </button>
+                        <button class="color-btn" data-theme="4" style="background: linear-gradient(135deg, #96CEB4, #C1E4D0);">
+                            <span class="theme-name">۴</span>
+                        </button>
+                        <button class="color-btn" data-theme="5" style="background: linear-gradient(135deg, #FFEAA7, #FFF5CC);">
+                            <span class="theme-name">۵</span>
+                        </button>
+                        <button class="color-btn" data-theme="6" style="background: linear-gradient(135deg, #DDA0DD, #F0D9F0);">
+                            <span class="theme-name">۶</span>
+                        </button>
+                        <button class="color-btn" data-theme="7" style="background: linear-gradient(135deg, #98D8C8, #C5EBD9);">
+                            <span class="theme-name">۷</span>
+                        </button>
+                        <button class="color-btn" data-theme="8" style="background: linear-gradient(135deg, #F7DC6F, #FAF3C8);">
+                            <span class="theme-name">۸</span>
+                        </button>
+                        <button class="color-btn" data-theme="9" style="background: linear-gradient(135deg, #BB8FCE, #D4C4E3);">
+                            <span class="theme-name">۹</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="theme-hint" id="themeHint">تم با هر بار ورود یا رفرش تغییر می‌کند</p>
+            </div>
+        </div>
+
+        <!-- Zarinpal Settings Modal -->
+        <div id="zarinpalModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔗 تنظیمات زرین‌پال</h2>
+                    <button class="modal-close" data-close="zarinpalModal">✕</button>
+                </div>
+                
+                <div class="zarinpal-setup">
+                    <div class="form-group">
+                        <label>کد دریافتی از زرین‌پال</label>
+                        <input type="text" id="zarinpalMerchantId" placeholder="کد مرچنت را وارد کنید">
+                    </div>
+                    <div class="api-status">
+                        <span class="status-indicator" id="apiStatus">❓</span>
+                        <span id="apiStatusText">وضعیت اتصال</span>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="saveZarinpalBtn">
+                        💾 ذخیره تنظیمات
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav">
+            <button class="nav-item active" data-screen="dashboard">
+                <span class="nav-icon">🏠</span>
+                <span id="navHome">خانه</span>
+            </button>
+            <button class="nav-item" data-action="notebook">
+                <span class="nav-icon">📓</span>
+                <span id="navNotebook">دفتر</span>
+            </button>
+            <button class="nav-item" data-action="add">
+                <span class="nav-icon plus">➕</span>
+            </button>
+            <button class="nav-item" data-action="mobile-charge">
+                <span class="nav-icon">📱</span>
+                <span id="navRecharge">شارژ</span>
+            </button>
+            <button class="nav-item" data-action="finance">
+                <span class="nav-icon">💳</span>
+                <span id="navFinance">مالی</span>
+            </button>
+        </nav>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+AI SCHOOL COUNSELING APPLICATION
+Project Structure & File Overview
+================================================================
+
+counseling-app/
+│
+├── 📄 README.md                    # Main documentation
+├── 📄 QUICK_START.txt              # Quick start guide
+├── 📄 DEPLOYMENT_GUIDE.md          # Complete deployment instructions
+├── 📄 PROJECT_STRUCTURE.txt        # This file
+├── 📄 API_KEYS.txt                 # API keys reference
+│
+├── 🚀 RUN_APP.bat                  # Start both backend and frontend
+├── 🧪 TEST_INSTALLATION.bat        # Test and install dependencies
+├── 📱 NGROK_SETUP.bat              # Setup ngrok for mobile testing
+│
+├── backend/                        # Python Flask Backend
+│   ├── 📄 main.py                  # Main Flask application
+│   ├── 📄 requirements.txt         # Python dependencies
+│   ├── 📄 setup.bat                # Backend setup script
+│   ├── 🧪 test_api_keys.py         # API keys testing script
+│   ├── 🧪 RUN_API_TEST.bat         # Run API tests
+│   └── venv/                       # Virtual environment (created on setup)
+│
+├── frontend/                       # Vite + Vanilla JS Frontend
+│   ├── 📄 index.html               # Main HTML file
+│   ├── 🎨 style.css                # Complete styling with animations
+│   ├── ⚙️ app.js                   # Main JavaScript logic
+│   ├── 📄 package.json             # Node.js dependencies
+│   ├── 📄 vite.config.js           # Vite configuration
+│   ├── 📱 BUILD_FOR_MOBILE.bat     # Build production version
+│   ├── node_modules/               # Node dependencies (created on npm install)
+│   └── dist/                       # Production build output (created on build)
+│
+└── images/                         # Images folder
+    └── 📄 README.md                # Instructions for images
+
+================================================================
+KEY FILES EXPLAINED
+================================================================
+
+BACKEND FILES:
+--------------
+main.py
+  - Flask web server
+  - API endpoints: /api/chat, /api/test-keys, /api/health
+  - Integration with Google AI Studio and Cerebras Cloud
+  - Supports 4 models: tutoring, academic_counseling, nutrition_health, sports
+  - Bilingual support (EN/FA)
+  - Automatic fallback between AI providers
+
+requirements.txt
+  - flask: Web framework
+  - flask-cors: Cross-origin resource sharing
+  - google-generativeai: Google AI Studio (Gemini)
+  - requests: HTTP library for Cerebras API
+
+test_api_keys.py
+  - Tests Google AI Studio connection
+  - Tests Cerebras Cloud connection
+  - Displays results and error messages
+
+FRONTEND FILES:
+---------------
+index.html
+  - Single-page application structure
+  - Header with logo and controls
+  - 4 circular model selection buttons
+  - Chat interface (hidden until model selected)
+  - API status panel
+  - Bilingual data attributes
+
+style.css
+  - Modern responsive design
+  - CSS variables for theming (light/dark)
+  - Rotating sphere logo animation
+  - Golden ring light effects
+  - Pulse and shine animations
+  - Mobile-first responsive design
+  - RTL support for Persian
+
+app.js
+  - Event handling for all interactions
+  - Language toggle (EN ↔ FA)
+  - Theme toggle (Light ↔ Dark)
+  - Model selection and chat management
+  - API communication with axios
+  - Message rendering and animations
+  - API status testing
+  - LocalStorage for preferences
+
+BATCH SCRIPTS:
+--------------
+TEST_INSTALLATION.bat
+  - Checks Python, Node.js, npm
+  - Creates virtual environment
+  - Installs all dependencies
+  - One-time setup
+
+RUN_APP.bat
+  - Starts backend on port 5174
+  - Starts frontend on port 5173
+  - Opens two terminal windows
+  - Quick launch for development
+
+NGROK_SETUP.bat
+  - Creates ngrok tunnels for both services
+  - Instructions for mobile configuration
+  - Requires ngrok to be installed
+
+BUILD_FOR_MOBILE.bat
+  - Builds production-ready frontend
+  - Outputs to dist/ folder
+  - Optional preview mode
+
+RUN_API_TEST.bat
+  - Tests API connectivity
+  - Verifies Google AI Studio
+  - Verifies Cerebras Cloud
+  - Shows detailed results
+
+================================================================
+FEATURES IMPLEMENTATION
+================================================================
+
+✅ 4 AI Models (tutoring, academic_counseling, nutrition_health, sports)
+   - Implemented in: backend/main.py (MODEL_CONTEXTS)
+   - UI: frontend/index.html (model-circle elements)
+
+✅ Circular Buttons with Golden Ring Light
+   - CSS: .model-circle, .golden-ring in style.css
+   - Animation: pulseRing keyframe
+
+✅ Click Shine Effect
+   - CSS: shineEffect keyframe
+   - JS: app.js (selectModel function adds 'clicked' class)
+
+✅ Language Toggle (EN/FA)
+   - JS: app.js (toggleLanguage function)
+   - HTML: data-en and data-fa attributes
+   - CSS: RTL support with body[dir="rtl"]
+
+✅ Theme Toggle (Day/Night)
+   - CSS: :root and [data-theme="dark"] variables
+   - JS: app.js (toggleTheme function)
+   - Icons: SVG sun/moon in index.html
+
+✅ Rotating Sphere Logo
+   - CSS: rotateSphere animation
+   - HTML: .rotating-sphere in index.html
+
+✅ API Key Testing
+   - Backend: /api/test-keys endpoint
+   - Script: backend/test_api_keys.py
+   - Frontend: Automatic on load
+
+✅ Mobile Responsive
+   - CSS: Media queries for tablets and phones
+   - Vite: host: true for network access
+   - ngrok: For external mobile access
+
+================================================================
+PORTS USED
+================================================================
+
+Development:
+  - Backend:  5174 (Flask)
+  - Frontend: 5173 (Vite dev server)
+  - Preview:  4173 (Vite preview - after build)
+
+Production:
+  - Configurable based on deployment
+
+================================================================
+API ENDPOINTS
+================================================================
+
+GET  /api/health
+     Returns: {"status": "healthy", "message": "..."}
+
+POST /api/chat
+     Body: {
+       "message": "user message",
+       "model": "tutoring|academic_counseling|nutrition_health|sports",
+       "language": "en|fa",
+       "provider": "google_ai|cerebras"
+     }
+     Returns: {
+       "success": true/false,
+       "response": "AI response",
+       "provider": "provider name"
+     }
+
+GET  /api/test-keys
+     Returns: {
+       "google_ai": {"working": true/false, "message": "..."},
+       "cerebras": {"working": true/false, "message": "..."}
+     }
+
+================================================================
+BROWSER COMPATIBILITY
+================================================================
+
+Supported Browsers:
+  ✅ Chrome/Edge (latest)
+  ✅ Firefox (latest)
+  ✅ Safari (latest)
+  ✅ Mobile Chrome
+  ✅ Mobile Safari
+
+Required Features:
+  - ES6 Modules
+  - CSS Variables
+  - CSS Grid
+  - Flexbox
+  - LocalStorage
+  - Fetch API
+
+================================================================
