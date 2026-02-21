@@ -8,3 +8,7 @@ thumbs.db
 .env
 *.log
 API_KEYS.local.txt
+desktop.ini
+*.tmp
+.tmp.drivedownload/
+.tmp.driveupload/
