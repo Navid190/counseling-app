@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Configuration
-// For local development, use '/api' (relative path via Vite proxy)
-// For mobile/ngrok, replace with your ngrok backend URL like: 'https://YOUR-BACKEND-URL.ngrok.io/api'
-const API_BASE_URL = window.BACKEND_URL || '/api';
+// در حالت استقرار (Production) از بک‌اند روی PythonAnywhere استفاده می‌کنیم
+// اگر بعداً خواستی موقتاً بک‌اند دیگری تست کنی، فقط این URL را عوض کن
+const API_BASE_URL = 'https://navid190.pythonanywhere.com/api';
 let currentLanguage = 'en';
 let currentTheme = 'light';
 let currentModel = null;
