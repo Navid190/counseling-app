@@ -106,6 +106,7 @@ const translations = {
 // Application State
 const appState = {
     user: null,
+    registeredUsers: {},
     theme: 1,
     themeMode: 'auto', // 'auto' or 'fixed'
     language: 'fa',
@@ -114,8 +115,14 @@ const appState = {
     expenses: [],
     savingsGoals: [],
     notebookGoals: [],
-    chatHistory: [],
-    currentChatType: 'nutrition',
+    // Separate chat history for each chatbot type
+    chatHistory: {
+        nutrition: [],
+        sports: [],
+        academic: [],
+        planning: []
+    },
+    currentChatType: 'academic',
     balance: 0,
     totalIncome: 0,
     totalExpenses: 0,
@@ -188,8 +195,16 @@ function loadUserData() {
     const settingsData = localStorage.getItem('nagai_settings');
     const financeData = localStorage.getItem('nagai_finance');
     const notebookData = localStorage.getItem('nagai_notebook');
+    const usersIndexData = localStorage.getItem('nagai_users_index');
     
     if (userData) appState.user = JSON.parse(userData);
+    if (usersIndexData) {
+        try {
+            appState.registeredUsers = JSON.parse(usersIndexData) || {};
+        } catch (e) {
+            appState.registeredUsers = {};
+        }
+    }
     if (settingsData) {
         const settings = JSON.parse(settingsData);
         appState.theme = settings.theme || 1;
@@ -226,6 +241,11 @@ function saveUserData() {
         savingsGoals: appState.savingsGoals
     }));
     localStorage.setItem('nagai_notebook', JSON.stringify(appState.notebookGoals));
+    
+    if (appState.user && appState.user.mobile) {
+        appState.registeredUsers[appState.user.mobile] = appState.user.name;
+        localStorage.setItem('nagai_users_index', JSON.stringify(appState.registeredUsers));
+    }
 }
 
 // Initialize Theme
@@ -246,14 +266,30 @@ function applyTheme(themeNumber) {
 
 // Show Welcome Screen
 function showWelcome() {
-    document.getElementById('welcomeScreen').classList.add('active');
-    document.getElementById('dashboardScreen').classList.remove('active');
+    const welcome = document.getElementById('welcomeScreen');
+    const dashboard = document.getElementById('dashboardScreen');
+    if (welcome) {
+        welcome.classList.add('active');
+        welcome.style.display = 'block';
+    }
+    if (dashboard) {
+        dashboard.classList.remove('active');
+        dashboard.style.display = 'none';
+    }
 }
 
 // Show Dashboard
 function showDashboard() {
-    document.getElementById('welcomeScreen').classList.remove('active');
-    document.getElementById('dashboardScreen').classList.add('active');
+    const welcome = document.getElementById('welcomeScreen');
+    const dashboard = document.getElementById('dashboardScreen');
+    if (welcome) {
+        welcome.classList.remove('active');
+        welcome.style.display = 'none';
+    }
+    if (dashboard) {
+        dashboard.classList.add('active');
+        dashboard.style.display = 'block';
+    }
     updateDashboard();
 }
 
@@ -451,6 +487,8 @@ function setupEventListeners() {
             document.querySelectorAll('.quantum-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             appState.currentChatType = btn.dataset.type;
+            // Clear chat and show welcome for this chatbot type
+            clearChatAndShowWelcome();
         });
     });
     
@@ -594,6 +632,12 @@ function handleRegistration(e) {
         return;
     }
     
+    const existingName = appState.registeredUsers[mobile];
+    if (existingName && existingName !== name) {
+        showToast(`این شماره قبلا با نام "${existingName}" ثبت شده است`, 'error');
+        return;
+    }
+    
     appState.user = {
         name,
         age,
@@ -613,6 +657,8 @@ function handleActionClick(e) {
     switch(action) {
         case 'chat-quantum':
             openModal('quantumChatModal');
+            // Clear and show welcome for the current chatbot
+            clearChatAndShowWelcome();
             break;
         case 'notebook':
             openModal('notebookModal');
@@ -728,11 +774,41 @@ function processZarinpalPayment(mobile, amount) {
         return;
     }
     
-    // In production, this would call the Zarinpal API
-    // For now, simulate the payment
-    setTimeout(() => {
+    // Use sandbox URL for testing
+    const ZARINPAL_URL = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json';
+    
+    const callbackUrl = window.location.origin + '/?payment=verify';
+    
+    fetch(ZARINPAL_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            merchant_id: appState.zarinpalMerchantId,
+            amount: parseInt(amount),
+            callback_url: callbackUrl,
+            description: `شارژ موبایل ${mobile}`,
+            mobile: mobile
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.data && data.data.authority) {
+            // Redirect to payment page
+            const paymentUrl = `https://sandbox.zarinpal.com/pg/StartPay/${data.data.authority}`;
+            window.location.href = paymentUrl;
+        } else {
+            // Fallback to simulation if API fails
+            console.error('Zarinpal error:', data);
+            simulatePayment(mobile, amount);
+        }
+    })
+    .catch(err => {
+        console.error('Payment error:', err);
+        // Fallback to simulation on error
         simulatePayment(mobile, amount);
-    }, 2000);
+    });
 }
 
 // Simulate Payment
@@ -766,11 +842,51 @@ function sendChatMessage() {
     addChatMessage(message, 'user');
     input.value = '';
     
-    // Simulate AI response
-    setTimeout(() => {
-        const response = generateAIResponse();
-        addChatMessage(response, 'bot');
-    }, 1000);
+    // Show typing indicator
+    const chatMessages = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="message-avatar">🌟</div>
+        <div class="message-content">
+            <p>در حال نوشتن...</p>
+        </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Get current language
+    const currentLang = appState.language || 'fa';
+    const chatType = appState.currentChatType || 'academic';
+    
+    // Call API
+    fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            message: message,
+            model: chatType,
+            language: currentLang
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Remove typing indicator
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        
+        if (data.success) {
+            addChatMessage(data.response, 'bot');
+        } else {
+            addChatMessage('متأسفانه مشکلی پیش آمد. لطفاً دوباره تلاش کنید.', 'bot');
+        }
+    })
+    .catch(err => {
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        addChatMessage('خطا در اتصال. سرور را بررسی کنید.', 'bot');
+    });
 }
 
 // Add Chat Message
@@ -791,6 +907,112 @@ function addChatMessage(message, sender) {
     
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Clear Chat and Show Welcome for Current Chat Type
+function clearChatAndShowWelcome() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = '';
+    
+    const currentLang = appState.language || 'fa';
+    const chatType = appState.currentChatType || 'academic';
+    
+    // Different welcome messages for each chatbot type
+    const welcomeMessages = {
+        fa: {
+            nutrition: 'سلام عزیزم! 🍎 من متخصص تغذیه و سلامت هستم. درباره غذاهای سالم، میوه‌ها، ویتامین‌ها و عادت‌های سلامتی بپرس! چطور می‌تونم کمکت کنم؟',
+            sports: 'سلام قهرمان! ⚽ من مربی ورزشی هستم. درباره تمرین، ورزش‌های مختلف، و عضلات بپرس! چطور می‌تونم کمکت کنم؟',
+            academic: 'سلام دانش‌آموز عزیز! 📚 من مشاور تحصیلی هستم. درباره درس خواندن، امتحانات، برنامه‌ریزی و رشته‌ها بپرس! چطور می‌تونم کمکت کنم؟',
+            planning: 'سلام برنامه‌ریز! 📖 من متخصص برنامه‌ریزی درسی هستم. درباره اینکه چطور درس‌هایت را برنامه‌ریزی کنی بپرس! چطور می‌تونم کمکت کنم؟'
+        },
+        en: {
+            nutrition: "Hello sweetie! 🍎 I'm a nutrition and health expert. Ask me about healthy foods, fruits, vitamins, and healthy habits! How can I help you?",
+            sports: "Hello champion! ⚽ I'm a sports coach. Ask me about exercises, different sports, and muscles! How can I help you?",
+            academic: "Hello dear student! 📚 I'm an academic counselor. Ask me about studying, exams, planning, and majors! How can I help you?",
+            planning: "Hello planner! 📖 I'm a study planning expert. Ask me about how to plan your studies! How can I help you?"
+        },
+        ar: {
+            nutrition: 'مرحباً يا عزيزي! 🍎 أنا خبير التغذية والصحة. اسألني عن foods صحية وفواكه وفيتامينات وعادات صحية! كيف يمكنني مساعدتك؟',
+            sports: 'مرحباً يا بطل! ⚽ أنا مدرب رياضي. اسألني عن تمارين ورياضات مختلفة وعضلات! كيف يمكنني مساعدتك؟',
+            academic: 'مرحباً يا طالب عزيز! 📚 أنا مرشد أكاديمي. اسألني عن الدراسة والامتحانات والتخطيط والتخصصات! كيف يمكنني مساعدتك؟',
+            planning: 'مرحباً يا مخطط! 📖 أنا خبير تخطيط الدراسي. اسألني عن كيفية تخطيط دراستك! كيف يمكنني مساعدتك؟'
+        }
+    };
+    
+    const welcomeMsg = welcomeMessages[currentLang][chatType] || welcomeMessages.fa.academic;
+    addChatMessage(welcomeMsg, 'bot');
+    
+    // Update quick questions based on chatbot type
+    updateQuickQuestions(chatType, currentLang);
+}
+
+// Update Quick Questions for Current Chat Type
+function updateQuickQuestions(chatType, language) {
+    const quickQuestionsContainer = document.getElementById('quickQuestions');
+    if (!quickQuestionsContainer) return;
+    
+    const questions = {
+        fa: {
+            nutrition: [
+                { text: '🍎 صبحانه سالم چی بخورم؟', question: 'چه صبحانه سالمی پیشنهاد میکنی؟' },
+                { text: '💧 چقدر آب بخورم؟', question: 'روزانه چقدر آب باید بخورم؟' },
+                { text: '🥗 میوه‌های بهترین کدامند؟', question: 'کدام میوه‌ها برای من بهترند؟' }
+            ],
+            sports: [
+                { text: '🏃 ورزش صبحگاهی چطور؟', question: 'بهترین زمان برای ورزش صبحگاهی چه زمانی است؟' },
+                { text: '💪 تمرین عضلات چطور؟', question: 'چطور عضلات قوی داشته باشم؟' },
+                { text: '⚽ ورزش مورد علاقه چی بازی کنم؟', question: 'کدام ورزش برای سن من بهتر است؟' }
+            ],
+            academic: [
+                { text: '📚 چطور درس بخوانم؟', question: 'چطور درس بخوانم تا یاد بگیرم؟' },
+                { text: '📝 امتحان چطور قبول شوم؟', question: 'چطور برای امتحانات درس بخوانم؟' },
+                { text: '🎯 هدف تحصیلی چی بذارم؟', question: 'چه هدف تحصیلی برای خودم بذارم؟' }
+            ],
+            planning: [
+                { text: '📋 برنامه هفتگی چطور؟', question: 'چطور یک برنامه درسی هفتگی بنویسم؟' },
+                { text: '⏰ زمان‌بندی چطور؟', question: 'چطور زمانم را مدیریت کنم؟' },
+                { text: '📖 درس‌ها را چطور تقسیم کنم؟', question: 'چطور درس‌ها را برای مطالعه تقسیم کنم؟' }
+            ]
+        },
+        en: {
+            nutrition: [
+                { text: '🍎 Healthy Breakfast?', question: 'What is a healthy breakfast for me?' },
+                { text: '💧 How much water?', question: 'How much water should I drink daily?' },
+                { text: '🥗 Best fruits?', question: 'Which fruits are best for me?' }
+            ],
+            sports: [
+                { text: '🏃 Morning exercise?', question: 'What is the best time for morning exercise?' },
+                { text: '💪 Build muscles?', question: 'How can I build strong muscles?' },
+                { text: '⚽ Best sport?', question: 'Which sport is best for my age?' }
+            ],
+            academic: [
+                { text: '📚 How to study?', question: 'How should I study to learn?' },
+                { text: '📝 Pass exams?', question: 'How to study for exams to pass?' },
+                { text: '🎯 Set goals?', question: 'What academic goals should I set?' }
+            ],
+            planning: [
+                { text: '📋 Weekly plan?', question: 'How to write a weekly study plan?' },
+                { text: '⏰ Time management?', question: 'How to manage my time?' },
+                { text: '📖 Divide subjects?', question: 'How to divide subjects for study?' }
+            ]
+        }
+    };
+    
+    const langQuestions = questions[language] || questions.fa;
+    const typeQuestions = langQuestions[chatType] || langQuestions.academic;
+    
+    quickQuestionsContainer.innerHTML = typeQuestions.map(q => 
+        `<button class="quick-question" data-question="${q.question}">${q.text}</button>`
+    ).join('');
+    
+    // Re-attach event listeners
+    document.querySelectorAll('.quick-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const question = btn.dataset.question;
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        });
+    });
 }
 
 // Generate AI Response
