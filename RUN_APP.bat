@@ -1,23 +1,19 @@
 @echo off
-echo ========================================
-echo AI School Counseling Application
-echo ========================================
+echo ================================
+echo    NAG AI School App Starter
+echo ================================
 echo.
 
-echo Starting Backend Server...
-start cmd /k "cd backend && .\venv\Scripts\Activate.ps1 && python main.py"
+cd /d "%~dp0backend"
 
-timeout /t 3
-
-echo Starting Frontend Server...
-start cmd /k "cd frontend && npm run dev"
+echo Installing dependencies...
+python -m pip install -r requirements.txt
 
 echo.
-echo ========================================
-echo Application is starting...
-echo Backend: http://localhost:5174
-echo Frontend: http://localhost:5173
-echo ========================================
+echo Starting server...
+echo Open browser: http://localhost:5000
 echo.
-echo Press any key to exit this window...
+
+python main.py
+
 pause

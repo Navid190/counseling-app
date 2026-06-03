@@ -1,1102 +1,1312 @@
-// Borna Holding - Main Entrance Page with Rotating Pyramid Navigation
-// Complete frontend for z.ai with theme, language, and occasion systems
+// ============================================
+// NAG AI - New Path to Growth
+// Comprehensive Student Assistant App
+// ============================================
 
-import React, { useState, useEffect } from 'react';
-
-// ============================================================================
-// THEME ENGINE (9 Themes)
-// ============================================================================
-
-const THEMES = [
-  {
-    id: "academic",
-    name: { fa: "کلاسیک آکادمیک", en: "Classic Academic", ar: "أكاديمي كلاسيكي" },
-    primary: "#1B263B", secondary: "#F0F4F8", accent: "#D4AF37",
-    bg: "#F0F4F8", surface: "#FFFFFF", text: "#1B263B", muted: "#64748B",
-    border: "#E2E8F0", shadow: "rgba(27,38,59,0.12)",
-    description: { fa: "رسمی و قابل اعتماد", en: "Formal & trustworthy" }
-  },
-  {
-    id: "nature",
-    name: { fa: "طبیعت و رشد", en: "Nature & Growth", ar: "الطبيعة والنمو" },
-    primary: "#2E5C48", secondary: "#FDFBF7", accent: "#E89F5E",
-    bg: "#FDFBF7", surface: "#FFFFFF", text: "#1A3A2A", muted: "#6B7B6E",
-    border: "#D4E6DA", shadow: "rgba(46,92,72,0.12)",
-    description: { fa: "آرام و طبیعی", en: "Calm & natural" }
-  },
-  {
-    id: "tech",
-    name: { fa: "مدرن و تکنولوژی", en: "Modern Tech", ar: "تقني حديث" },
-    primary: "#007BFF", secondary: "#F8F9FA", accent: "#17A2B8",
-    bg: "#F8F9FA", surface: "#FFFFFF", text: "#212529", muted: "#6C757D",
-    border: "#DEE2E6", shadow: "rgba(0,123,255,0.12)",
-    description: { fa: "نوآور و هوشمند", en: "Innovative & smart" }
-  },
-  {
-    id: "energy",
-    name: { fa: "انرژی و پویایی", en: "Energy & Sport", ar: "الطاقة والحيوية" },
-    primary: "#FF6B35", secondary: "#FFFFFF", accent: "#004E89",
-    bg: "#FFF8F5", surface: "#FFFFFF", text: "#1A1A1A", muted: "#666666",
-    border: "#FFD4C2", shadow: "rgba(255,107,53,0.12)",
-    description: { fa: "پرانرژی و شاد", en: "Energetic & vibrant" }
-  },
-  {
-    id: "creative",
-    name: { fa: "خلاقیت و هنر", en: "Creative & Art", ar: "الإبداع والفن" },
-    primary: "#6F42C1", secondary: "#F3E5F5", accent: "#FFD54F",
-    bg: "#FAF5FF", surface: "#FFFFFF", text: "#2D1B5E", muted: "#7B6B8A",
-    border: "#E1BEF0", shadow: "rgba(111,66,193,0.12)",
-    description: { fa: "خلاق و هنری", en: "Creative & artistic" }
-  },
-  {
-    id: "minimal",
-    name: { fa: "مینیمال و تمیز", en: "Minimal & Clean", ar: "بسيط ونظيف" },
-    primary: "#333333", secondary: "#FFFFFF", accent: "#4DA8DA",
-    bg: "#FFFFFF", surface: "#F9FAFB", text: "#111111", muted: "#888888",
-    border: "#E5E7EB", shadow: "rgba(0,0,0,0.08)",
-    description: { fa: "ساده و خوانا", en: "Simple & readable" }
-  },
-  {
-    id: "warm",
-    name: { fa: "گرم و صمیمی", en: "Warm & Friendly", ar: "دافئ وودود" },
-    primary: "#C05640", secondary: "#F5E6CA", accent: "#A8D5BA",
-    bg: "#FDF6EE", surface: "#FFFFFF", text: "#3D1C10", muted: "#8B6355",
-    border: "#EDD5C0", shadow: "rgba(192,86,64,0.12)",
-    description: { fa: "دوستانه و گرم", en: "Friendly & warm" }
-  },
-  {
-    id: "luxury",
-    name: { fa: "لوکس و خاص", en: "Luxury & Premium", ar: "فاخر ومميز" },
-    primary: "#800020", secondary: "#C0C0C0", accent: "#000000",
-    bg: "#FAF9F7", surface: "#FFFFFF", text: "#1A0008", muted: "#7A7A7A",
-    border: "#D4C5C8", shadow: "rgba(128,0,32,0.15)",
-    description: { fa: "لوکس و برند", en: "Premium & branded" }
-  },
-  {
-    id: "pastel",
-    name: { fa: "پاستلی و کودکانه", en: "Pastel & Playful", ar: "باستيل ومرح" },
-    primary: "#AECBEB", secondary: "#FFD1DC", accent: "#B5EAD7",
-    bg: "#FEFEFE", surface: "#FFFFFF", text: "#2C3E50", muted: "#8BA7B5",
-    border: "#D8EAF5", shadow: "rgba(174,203,235,0.2)",
-    description: { fa: "نرم و کودکانه", en: "Soft & playful" }
-  },
-];
-
-// ============================================================================
-// OCCASION THEMES
-// ============================================================================
-
-const OCCASION_THEMES = {
-  shamsi: [
-    { month: 1, day: 1, name: { fa: "نوروز", en: "Nowruz" },
-      theme: { primary: "#2E8B57", accent: "#FFD700", bg: "#F0FFF0",
-        surface: "#FFFFFF", text: "#1A3A2A", muted: "#5A7A5A",
-        border: "#90EE90", shadow: "rgba(46,139,87,0.15)" },
-      emoji: "🌸", range: 13 },
-    { month: 6, day: 31, name: { fa: "آخر شهریور --- آغاز مهر", en: "Back to School" },
-      theme: { primary: "#FF8C00", accent: "#4169E1", bg: "#FFF8F0",
-        surface: "#FFFFFF", text: "#2C1810", muted: "#8B6914",
-        border: "#FFD4A0", shadow: "rgba(255,140,0,0.15)" },
-      emoji: "📚", range: 7 },
-    { month: 11, day: 30, name: { fa: "یلدا", en: "Yalda Night" },
-      theme: { primary: "#8B0000", accent: "#FFD700", bg: "#1A0000",
-        surface: "#2D0000", text: "#FFE4E1", muted: "#CD853F",
-        border: "#8B0000", shadow: "rgba(139,0,0,0.3)" },
-      emoji: "🍉", range: 1 },
-    { month: 10, day: 12, name: { fa: "دهه فجر", en: "Fajr Decade" },
-      theme: { primary: "#006400", accent: "#FF0000", bg: "#F0FFF0",
-        surface: "#FFFFFF", text: "#003300", muted: "#4A7A4A",
-        border: "#90EE90", shadow: "rgba(0,100,0,0.15)" },
-      emoji: "🌹", range: 10 },
-  ],
-  miladi: [
-    { month: 12, day: 25, name: { fa: "کریسمس", en: "Christmas" },
-      theme: { primary: "#CC0000", accent: "#228B22", bg: "#FFF5F5",
-        surface: "#FFFFFF", text: "#1A0000", muted: "#8B4513",
-        border: "#FFB6C1", shadow: "rgba(204,0,0,0.15)" },
-      emoji: "🎄", range: 3 },
-    { month: 1, day: 1, name: { fa: "سال نو میلادی", en: "New Year" },
-      theme: { primary: "#191970", accent: "#FFD700", bg: "#000033",
-        surface: "#0D0D4D", text: "#E0E0FF", muted: "#8080B0",
-        border: "#2A2A8A", shadow: "rgba(25,25,112,0.4)" },
-      emoji: "🎆", range: 2 },
-    { month: 10, day: 31, name: { fa: "هالووین", en: "Halloween" },
-      theme: { primary: "#FF6600", accent: "#7B00FF", bg: "#1A0D00",
-        surface: "#2D1500", text: "#FF9933", muted: "#CC6600",
-        border: "#FF6600", shadow: "rgba(255,102,0,0.3)" },
-      emoji: "🎃", range: 1 },
-  ],
-  qamari: [
-    { month: 9, day: 1, name: { fa: "ماه رمضان", en: "Ramadan", ar: "رمضان المبارك" },
-      theme: { primary: "#4B0082", accent: "#FFD700", bg: "#0D0020",
-        surface: "#1A0040", text: "#E8D5FF", muted: "#9B6DBF",
-        border: "#6A0DAD", shadow: "rgba(75,0,130,0.4)" },
-      emoji: "🌙", range: 30 },
-    { month: 12, day: 10, name: { fa: "عید قربان", en: "Eid al-Adha", ar: "عيد الأضحى" },
-      theme: { primary: "#006400", accent: "#FFD700", bg: "#F0FFF0",
-        surface: "#FFFFFF", text: "#003300", muted: "#4A7A4A",
-        border: "#90EE90", shadow: "rgba(0,100,0,0.15)" },
-      emoji: "🕌", range: 4 },
-    { month: 1, day: 1, name: { fa: "عید نوروز قمری", en: "Islamic New Year", ar: "رأس السنة الهجرية" },
-      theme: { primary: "#2E4057", accent: "#F7B731", bg: "#1A2640",
-        surface: "#243450", text: "#E8EFF8", muted: "#7B8FA6",
-        border: "#3D5475", shadow: "rgba(46,64,87,0.4)" },
-      emoji: "🌟", range: 2 },
-  ]
+// Translation Data
+const translations = {
+    fa: {
+        welcomeTagline: 'هوشمندانه رشد کنید',
+        labelName: 'نام دانش‌آموز',
+        labelAge: 'سن',
+        startBtn: 'شروع کنید',
+        dashboardTitle: 'داشبورد',
+        statBalance: 'موجودی کل',
+        statIncome: 'درآمد ماهانه',
+        statExpense: 'هزینه‌ها',
+        mainActionsTitle: 'عملیات اصلی',
+        actionNutrition: 'تغذیه و سلامت',
+        actionSports: 'ورزش و تناسب',
+        actionAcademic: 'مشاوره تحصیلی',
+        actionPlanning: 'برنامه‌ریزی درسی',
+        actionNotebook: 'دفترچه اهداف',
+        actionRecharge: 'شارژ موبایل',
+        actionFinance: 'امور مالی',
+        actionGallery: 'گالری',
+        recentTitle: 'فعالیت‌های اخیر',
+        emptyStateText: 'هنوز فعالیتی ثبت نشده است',
+        viewAllBtn: 'مشاهده همه →',
+        chatTitle: 'چت کوانتومی',
+        chatWelcome: 'سلام عزیزم! 👋 من دستیار هوشمند تو هستم. چطور می‌تونم کمکت کنم؟',
+        tabNutrition: 'تغذیه',
+        tabSports: 'ورزش',
+        tabAcademic: 'تحصیلی',
+        tabPlanning: 'برنامه‌ریزی',
+        navHome: 'خانه',
+        navNotebook: 'دفتر',
+        navRecharge: 'شارژ',
+        navFinance: 'مالی'
+    },
+    ar: {
+        welcomeTagline: 'نمو بذكاء',
+        labelName: 'اسم الطالب',
+        labelAge: 'العمر',
+        startBtn: 'ابدأ',
+        dashboardTitle: 'لوحة التحكم',
+        statBalance: 'الرصيد الإجمالي',
+        statIncome: 'الدخل الشهري',
+        statExpense: 'المصروفات',
+        mainActionsTitle: 'العمليات الرئيسية',
+        actionNutrition: 'التغذية والصحة',
+        actionSports: 'الرياضة واللياقة',
+        actionAcademic: 'الإرشاد الأكاديمي',
+        actionPlanning: 'التخطيط الدراسي',
+        actionNotebook: 'دفتر الأهداف',
+        actionRecharge: 'شحن الهاتف',
+        actionFinance: 'الشؤون المالية',
+        actionGallery: 'الصور',
+        recentTitle: 'النشاطات الأخيرة',
+        emptyStateText: 'لا يوجد نشاط مسجل بعد',
+        viewAllBtn: 'عرض الكل ←',
+        chatTitle: 'الدردشة الكمية',
+        chatWelcome: 'مرحباً يا عزيزي! 👋 أنا مساعدك الذكي. كيف يمكنني مساعدتك؟',
+        tabNutrition: 'التغذية',
+        tabSports: 'الرياضة',
+        tabAcademic: 'أكاديمي',
+        tabPlanning: 'التخطيط',
+        navHome: 'الرئيسية',
+        navNotebook: 'الدفتر',
+        navRecharge: 'شحن',
+        navFinance: 'مالي'
+    },
+    en: {
+        welcomeTagline: 'Grow Smart',
+        labelName: 'Student Name',
+        labelAge: 'Age',
+        startBtn: 'Get Started',
+        dashboardTitle: 'Dashboard',
+        statBalance: 'Total Balance',
+        statIncome: 'Monthly Income',
+        statExpense: 'Expenses',
+        mainActionsTitle: 'Main Actions',
+        actionNutrition: 'Nutrition & Health',
+        actionSports: 'Sports & Fitness',
+        actionAcademic: 'Academic Counseling',
+        actionPlanning: 'Lesson Planning',
+        actionNotebook: 'Goals Notebook',
+        actionRecharge: 'Mobile Recharge',
+        actionFinance: 'Finance',
+        actionGallery: 'Gallery',
+        recentTitle: 'Recent Activities',
+        emptyStateText: 'No activities recorded yet',
+        viewAllBtn: 'View All →',
+        chatTitle: 'Quantum Chat',
+        chatWelcome: "Hello dear! 👋 I'm your smart assistant. How can I help you?",
+        tabNutrition: 'Nutrition',
+        tabSports: 'Sports',
+        tabAcademic: 'Academic',
+        tabPlanning: 'Planning',
+        navHome: 'Home',
+        navNotebook: 'Notebook',
+        navRecharge: 'Recharge',
+        navFinance: 'Finance'
+    }
 };
 
-// ============================================================================
-// LANGUAGE SYSTEM (12 Languages)
-// ============================================================================
-
-const LANGUAGES = [
-  { code:"fa", name:"فارسی", nativeName:"فارسی", flag:"🇮🇷", dir:"rtl" },
-  { code:"ar", name:"Arabic", nativeName:"العربية", flag:"🇸🇦", dir:"rtl" },
-  { code:"ur", name:"Urdu", nativeName:"اردو", flag:"🇵🇰", dir:"rtl" },
-  { code:"en", name:"English", nativeName:"English", flag:"🇬🇧", dir:"ltr" },
-  { code:"fr", name:"French", nativeName:"Français", flag:"🇫🇷", dir:"ltr" },
-  { code:"de", name:"German", nativeName:"Deutsch", flag:"🇩🇪", dir:"ltr" },
-  { code:"es", name:"Spanish", nativeName:"Español", flag:"🇪🇸", dir:"ltr" },
-  { code:"zh", name:"Chinese", nativeName:"中文", flag:"🇨🇳", dir:"ltr" },
-  { code:"ja", name:"Japanese", nativeName:"日本語", flag:"🇯🇵", dir:"ltr" },
-  { code:"ko", name:"Korean", nativeName:"한국어", flag:"🇰🇷", dir:"ltr" },
-  { code:"tr", name:"Turkish", nativeName:"Türkçe", flag:"🇹🇷", dir:"ltr" },
-  { code:"pt", name:"Portuguese", nativeName:"Português", flag:"🇧🇷", dir:"ltr" },
-];
-
-const TRANSLATIONS = {
-  fa: {
-    welcome: "به هولدینگ برنا خوش آمدید",
-    subtitle: "درگاه ورود به مجموعه‌های تخصصی",
-    sports: "مجموعه ورزشی برنا",
-    highschool: "دبیرستان اندیشه برنا",
-    language: "دپارتمان زبان برنا",
-    technical: "دبیرستان فنی و حرفه‌ای برنا",
-    selectTheme: "انتخاب تم",
-    selectLanguage: "انتخاب زبان",
-    search: "جستجو...",
-    download: "دانلود",
-    close: "بستن",
-    pinTheme: "ثابت کردن تم فعلی",
-    unpinTheme: "حذف ثابت بودن تم",
-    themePinned: "تم فعلی ثابت است",
-    themeAuto: "تصادفی خودکار",
-    occasionActive: "تم مناسبتی فعال است",
-    dismiss: "بستن",
-    bornaHolding: "هولدینگ برنا",
-    entrance: "ورودی اصلی",
-    pyramidNav: "هرم ورودی",
-    clickToEnter: "برای ورود کلیک کنید"
-  },
-  en: {
-    welcome: "Welcome to Borna Holding",
-    subtitle: "Gateway to Specialized Complexes",
-    sports: "Borna Sports Complex",
-    highschool: "Borna Andisheh High School",
-    language: "Borna Language Department",
-    technical: "Borna Technical Vocational High School",
-    selectTheme: "Select Theme",
-    selectLanguage: "Select Language",
-    search: "Search...",
-    download: "Download",
-    close: "Close",
-    pinTheme: "Pin current theme",
-    unpinTheme: "Unpin theme",
-    themePinned: "Theme is pinned",
-    themeAuto: "Auto random",
-    occasionActive: "Occasion theme active",
-    dismiss: "Dismiss",
-    bornaHolding: "Borna Holding",
-    entrance: "Main Entrance",
-    pyramidNav: "Entrance Pyramid",
-    clickToEnter: "Click to enter"
-  },
-  ar: {
-    welcome: "مرحبًا بكم في مجموعة بورنا",
-    subtitle: "بوابة المجمعات المتخصصة",
-    sports: "مجمع بورنا الرياضي",
-    highschool: "مدرسة بورنا انديشه الثانوية",
-    language: "قسم اللغات في بورنا",
-    technical: "مدرسة بورنا الفنية المهنية الثانوية",
-    selectTheme: "اختر السمة",
-    selectLanguage: "اختر اللغة",
-    search: "بحث...",
-    download: "تحميل",
-    close: "إغلاق",
-    pinTheme: "تثبيت السمة الحالية",
-    unpinTheme: "إلغاء تثبيت السمة",
-    themePinned: "السمة مثبتة",
-    themeAuto: "عشوائي تلقائي",
-    occasionActive: "السمة المناسبة نشطة",
-    dismiss: "إغلاق",
-    bornaHolding: "مجموعة بورنا",
-    entrance: "المدخل الرئيسي",
-    pyramidNav: "هرم الدخول",
-    clickToEnter: "انقر للدخول"
-  },
-  ur: {
-    welcome: "برنا ہولڈنگ میں خوش آمدید",
-    subtitle: "خصوصی کمپلیکس کا گیٹ وے",
-    sports: "برنا اسپورٹس کمپلیکس",
-    highschool: "برنا اندیشہ ہائی اسکول",
-    language: "برنا لینگویج ڈیپارٹمنٹ",
-    technical: "برنا ٹیکنیکل ووکیشنل ہائی اسکول",
-    selectTheme: "تھیم منتخب کریں",
-    selectLanguage: "زبان منتخب کریں",
-    search: "تلاش کریں...",
-    download: "ڈاؤن لوڈ",
-    close: "بند کریں",
-    pinTheme: "موجودہ تھیم کو پن کریں",
-    unpinTheme: "تھیم کو غیر پن کریں",
-    themePinned: "تھیم پن ہے",
-    themeAuto: "خودکار بے ترتیب",
-    occasionActive: "موقع کی تھیم فعال ہے",
-    dismiss: "ہٹائیں",
-    bornaHolding: "برنا ہولڈنگ",
-    entrance: "مرکزی دروازہ",
-    pyramidNav: "داخلے کا ہرم",
-    clickToEnter: "داخلے کے لیے کلک کریں"
-  },
-  fr: {
-    welcome: "Bienvenue chez Borna Holding",
-    subtitle: "Porte d'entrée des complexes spécialisés",
-    sports: "Complexe Sportif Borna",
-    highschool: "Lycée Borna Andisheh",
-    language: "Département de Langues Borna",
-    technical: "Lycée Technique et Professionnel Borna",
-    selectTheme: "Choisir le thème",
-    selectLanguage: "Choisir la langue",
-    search: "Rechercher...",
-    download: "Télécharger",
-    close: "Fermer",
-    pinTheme: "Épingler le thème actuel",
-    unpinTheme: "Détacher le thème",
-    themePinned: "Thème épinglé",
-    themeAuto: "Aléatoire automatique",
-    occasionActive: "Thème d'occasion actif",
-    dismiss: "Ignorer",
-    bornaHolding: "Borna Holding",
-    entrance: "Entrée principale",
-    pyramidNav: "Pyramide d'entrée",
-    clickToEnter: "Cliquez pour entrer"
-  },
-  de: {
-    welcome: "Willkommen bei Borna Holding",
-    subtitle: "Zugang zu spezialisierten Komplexen",
-    sports: "Borna Sportkomplex",
-    highschool: "Borna Andisheh Gymnasium",
-    language: "Borna Sprachabteilung",
-    technical: "Borna Technische Berufsschule",
-    selectTheme: "Thema auswählen",
-    selectLanguage: "Sprache auswählen",
-    search: "Suchen...",
-    download: "Herunterladen",
-    close: "Schließen",
-    pinTheme: "Aktuelles Thema anheften",
-    unpinTheme: "Thema lösen",
-    themePinned: "Thema angeheftet",
-    themeAuto: "Automatisch zufällig",
-    occasionActive: "Anlassthema aktiv",
-    dismiss: "Schließen",
-    bornaHolding: "Borna Holding",
-    entrance: "Haupteingang",
-    pyramidNav: "Eingangspyramide",
-    clickToEnter: "Klicken zum Betreten"
-  },
-  es: {
-    welcome: "Bienvenido a Borna Holding",
-    subtitle: "Puerta de entrada a complejos especializados",
-    sports: "Complejo Deportivo Borna",
-    highschool: "Escuela Secundaria Borna Andisheh",
-    language: "Departamento de Idiomas Borna",
-    technical: "Escuela Técnica Vocacional Borna",
-    selectTheme: "Seleccionar tema",
-    selectLanguage: "Seleccionar idioma",
-    search: "Buscar...",
-    download: "Descargar",
-    close: "Cerrar",
-    pinTheme: "Fijar tema actual",
-    unpinTheme: "Desfijar tema",
-    themePinned: "Tema fijado",
-    themeAuto: "Aleatorio automático",
-    occasionActive: "Tema de ocasión activo",
-    dismiss: "Descartar",
-    bornaHolding: "Borna Holding",
-    entrance: "Entrada principal",
-    pyramidNav: "Pirámide de entrada",
-    clickToEnter: "Haga clic para entrar"
-  },
-  zh: {
-    welcome: "欢迎来到博尔纳控股",
-    subtitle: "专业综合体入口",
-    sports: "博尔纳体育中心",
-    highschool: "博尔纳思想高中",
-    language: "博尔纳语言部门",
-    technical: "博尔纳职业技术高中",
-    selectTheme: "选择主题",
-    selectLanguage: "选择语言",
-    search: "搜索...",
-    download: "下载",
-    close: "关闭",
-    pinTheme: "固定当前主题",
-    unpinTheme: "取消固定主题",
-    themePinned: "主题已固定",
-    themeAuto: "自动随机",
-    occasionActive: "场合主题已激活",
-    dismiss: "关闭",
-    bornaHolding: "博尔纳控股",
-    entrance: "主入口",
-    pyramidNav: "入口金字塔",
-    clickToEnter: "点击进入"
-  },
-  ja: {
-    welcome: "ボルナホールディングへようこそ",
-    subtitle: "専門複合施設への入り口",
-    sports: "ボルナスポーツ複合施設",
-    highschool: "ボルナアンディシェ高校",
-    language: "ボルナ言語学部",
-    technical: "ボルナ職業技術高校",
-    selectTheme: "テーマ選択",
-    selectLanguage: "言語選択",
-    search: "検索...",
-    download: "ダウンロード",
-    close: "閉じる",
-    pinTheme: "現在のテーマを固定",
-    unpinTheme: "テーマの固定を解除",
-    themePinned: "テーマ固定中",
-    themeAuto: "自動ランダム",
-    occasionActive: "行事テーマ有効",
-    dismiss: "閉じる",
-    bornaHolding: "ボルナホールディング",
-    entrance: "メインエントランス",
-    pyramidNav: "エントランスピラミッド",
-    clickToEnter: "クリックして入場"
-  },
-  ko: {
-    welcome: "보르나 홀딩에 오신 것을 환영합니다",
-    subtitle: "전문 복합시설로의 입구",
-    sports: "보르나 스포츠 콤플렉스",
-    highschool: "보르나 안디셰 고등학교",
-    language: "보르나 언어학과",
-    technical: "보르나 직업기술 고등학교",
-    selectTheme: "테마 선택",
-    selectLanguage: "언어 선택",
-    search: "검색...",
-    download: "다운로드",
-    close: "닫기",
-    pinTheme: "현재 테마 고정",
-    unpinTheme: "테마 고정 해제",
-    themePinned: "테마 고정됨",
-    themeAuto: "자동 랜덤",
-    occasionActive: "행사 테마 활성화",
-    dismiss: "닫기",
-    bornaHolding: "보르나 홀딩",
-    entrance: "메인 출입구",
-    pyramidNav: "입구 피라미드",
-    clickToEnter: "클릭하여 입장"
-  },
-  tr: {
-    welcome: "Borna Holding'e Hoş Geldiniz",
-    subtitle: "Uzmanlaşmış Komplekslere Açılan Kapı",
-    sports: "Borna Spor Kompleksi",
-    highschool: "Borna Andişeh Lisesi",
-    language: "Borna Dil Bölümü",
-    technical: "Borna Teknik Meslek Lisesi",
-    selectTheme: "Tema Seç",
-    selectLanguage: "Dil Seç",
-    search: "Ara...",
-    download: "İndir",
-    close: "Kapat",
-    pinTheme: "Mevcut temayı sabitle",
-    unpinTheme: "Temayı çöz",
-    themePinned: "Tema sabitlendi",
-    themeAuto: "Otomatik rastgele",
-    occasionActive: "Özel gün teması aktif",
-    dismiss: "Kapat",
-    bornaHolding: "Borna Holding",
-    entrance: "Ana Giriş",
-    pyramidNav: "Giriş Piramidi",
-    clickToEnter: "Girmek için tıklayın"
-  },
-  pt: {
-    welcome: "Bem-vindo à Borna Holding",
-    subtitle: "Porta de entrada para complexos especializados",
-    sports: "Complexo Esportivo Borna",
-    highschool: "Escola Secundária Borna Andisheh",
-    language: "Departamento de Idiomas Borna",
-    technical: "Escola Técnica Profissional Borna",
-    selectTheme: "Selecionar tema",
-    selectLanguage: "Selecionar idioma",
-    search: "Pesquisar...",
-    download: "Baixar",
-    close: "Fechar",
-    pinTheme: "Fixar tema atual",
-    unpinTheme: "Desafixar tema",
-    themePinned: "Tema fixado",
-    themeAuto: "Aleatório automático",
-    occasionActive: "Tema de ocasião ativo",
-    dismiss: "Dispensar",
-    bornaHolding: "Borna Holding",
-    entrance: "Entrada principal",
-    pyramidNav: "Pirâmide de entrada",
-    clickToEnter: "Clique para entrar"
-  }
+// Application State
+const appState = {
+    user: null,
+    registeredUsers: {},
+    theme: 1,
+    themeMode: 'auto', // 'auto' or 'fixed'
+    language: 'fa',
+    direction: 'rtl',
+    income: [],
+    expenses: [],
+    savingsGoals: [],
+    notebookGoals: [],
+    // Separate chat history for each chatbot type
+    chatHistory: {
+        nutrition: [],
+        sports: [],
+        academic: [],
+        planning: []
+    },
+    currentChatType: 'academic',
+    balance: 0,
+    totalIncome: 0,
+    totalExpenses: 0,
+    zarinpalMerchantId: '',
+    activities: []
 };
 
-// ============================================================================
-// ANIMATION CSS
-// ============================================================================
-
-const animationsCSS = `
-  /* ── NAG ANIMATIONS ── */
-  @keyframes nagBounce {
-    0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
-    100% { transform: translate(0px, 0px) rotate(0deg) scale(1.25); opacity: 1; }
-  }
-  
-  @keyframes nagFadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes nagPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  
-  @keyframes nagSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-  @keyframes nagThemeIn {
-    from { opacity: 0; transform: scale(0.96); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  
-  @keyframes rotatePyramid {
-    from { transform: rotateY(0deg) rotateX(10deg); }
-    to { transform: rotateY(360deg) rotateX(10deg); }
-  }
-  
-  @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-  }
-  
-  @keyframes glow {
-    0% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.3)); }
-    50% { filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
-    100% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.3)); }
-  }
-  
-  .nag-bounce { animation: nagBounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0s infinite normal none; }
-  .nag-fade-up { animation: nagFadeUp 0.35s ease both; }
-  .nag-pulse { animation: nagPulse 2s ease infinite; }
-  .nag-spin { animation: nagSpin 0.7s linear infinite; }
-  .nag-theme-in { animation: nagThemeIn 0.4s ease both; }
-  .rotate-pyramid { animation: rotatePyramid 20s linear infinite; }
-  .float { animation: float 3s ease-in-out infinite; }
-  .glow { animation: glow 2s ease-in-out infinite; }
-  
-  /* Pyramid specific styles */
-  .pyramid-container {
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .pyramid {
-    width: 300px;
-    height: 300px;
-    position: relative;
-    transform-style: preserve-3d;
-    animation: rotatePyramid 20s linear infinite;
-  }
-  
-  .pyramid-face {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 100px solid transparent;
-    border-right: 100px solid transparent;
-    border-bottom: 173.2px solid;
-    transform-origin: 50% 0;
-    opacity: 0.9;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .pyramid-face:hover {
-    opacity: 1;
-    filter: brightness(1.2);
-    transform: scale(1.05) translateZ(20px);
-  }
-  
-  .pyramid-face.front {
-    transform: rotateY(0deg) translateZ(86.6px) rotateX(30deg);
-    border-bottom-color: var(--face-color);
-  }
-  
-  .pyramid-face.right {
-    transform: rotateY(90deg) translateZ(86.6px) rotateX(30deg);
-    border-bottom-color: var(--face-color);
-  }
-  
-  .pyramid-face.back {
-    transform: rotateY(180deg) translateZ(86.6px) rotateX(30deg);
-    border-bottom-color: var(--face-color);
-  }
-  
-  .pyramid-face.left {
-    transform: rotateY(-90deg) translateZ(86.6px) rotateX(30deg);
-    border-bottom-color: var(--face-color);
-  }
-  
-  .pyramid-base {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    background: rgba(255,255,255,0.1);
-    transform: rotateX(90deg) translateZ(-86.6px);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-  
-  .face-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
-    background: rgba(0,0,0,0.6);
-    padding: 4px 8px;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.2);
-    pointer-events: none;
-  }
-  
-  .pyramid-face:hover .face-label {
-    background: rgba(0,0,0,0.8);
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-  
-  @media (max-width: 768px) {
-    .pyramid {
-      width: 200px;
-      height: 200px;
-    }
-    .pyramid-face {
-      border-left: 70px solid transparent;
-      border-right: 70px solid transparent;
-      border-bottom: 121.24px solid;
-    }
-    .pyramid-base {
-      width: 140px;
-      height: 140px;
-    }
-    .face-label {
-      font-size: 9px;
-      padding: 2px 4px;
-    }
-  }
-`;
-
-// ============================================================================
-// CUSTOM HOOKS
-// ============================================================================
-
-const useOccasionTheme = (lang) => {
-  const today = new Date();
-  
-  const checkOccasion = () => {
-    const m = today.getMonth() + 1;
-    const d = today.getDate();
-
-    if (lang === "en") {
-      for (const occ of OCCASION_THEMES.miladi) {
-        const startDate = new Date(today.getFullYear(), occ.month - 1, occ.day);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + occ.range);
-        if (today >= startDate && today < endDate) return occ;
-      }
-    }
-
-    if (lang === "fa") {
-      if (m === 3 && d >= 20 && d <= 31) return OCCASION_THEMES.shamsi[0];
-      if (m === 9 && d >= 22 && d <= 30) return OCCASION_THEMES.shamsi[1];
-      if (m === 12 && d === 21) return OCCASION_THEMES.shamsi[2];
-    }
-
-    return null;
-  };
-
-  return checkOccasion();
+// AI Motivation Messages
+const motivationMessages = {
+    nutrition: [
+        '🌟 عالی! تغذیه سالم کلید موفقیت است. ادامه بده!',
+        '💪 با تغذیه درست، انرژی بیشتری برای درس خواندن داری!',
+        '🥗 بدن سالم = ذهن سالم. داری عالی پیش میری!',
+        '✨ هر قدمی که برای سلامتی برمیداری، سرمایه‌گذاری برای آینده‌ات است!',
+        '🌈 تغذیه متوازن، رمز موفقیت تحصیلی!'
+    ],
+    sports: [
+        '🏃 ورزش باعث میشه مغز بهتر کار کنه! ادامه بده!',
+        '💪 بدن قوی، ذهن قوی! داری عالی پیش میری!',
+        '🌟 هر روز یه قدم کوچیک، نتیجه بزرگ!',
+        '🎯 با ورزش منظم، تمرکز بیشتری در درس خواندن داری!',
+        '⭐ سلامتی تنها ثروت واقعیه!'
+    ],
+    academic: [
+        '📚 دانش قدرته! داری عالی پیش میری!',
+        '🌟 هر درسی که یاد میگیری، قدمی به سوی موفقیت!',
+        '💪 با تلاش و پشتکار، به هرچیزی میرسی!',
+        '✨ خودت رو به خاطر این همه زحمت تحسین کن!',
+        '🎯 تو توانایی رسیدن به هر هدفی رو داری!'
+    ],
+    planning: [
+        '📋 برنامه‌ریزی یعنی موفقیت! ادامه بده!',
+        '🌟 با برنامه‌ریزی، رویاهایت را به واقعیت تبدیل میکنی!',
+        '💪 هر برنامه‌ای که مینویسی، یه قدم به جلویی!',
+        '✨ زمان طلاییه، ازش بهترین استفاده رو بکن!',
+        '🎯 تو مدیر زمان خودتی!'
+    ]
 };
 
-// ============================================================================
-// COMPONENTS
-// ============================================================================
-
-const ThemePanel = ({ themes, current, isPinned, onSelect, onPin, onClose, lang }) => (
-  <div style={{
-    position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-    background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)",
-    zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center"
-  }} onClick={e => e.target === e.currentTarget && onClose()}>
-    <div style={{
-      background: "#fff", borderRadius: 16, padding: 24, maxWidth: 560, width: "90%",
-      boxShadow: "0 24px 64px rgba(0,0,0,0.2)", maxHeight: "85vh", overflowY: "auto"
-    }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 16 }}>🎨 {lang === 'fa' ? 'انتخاب تم' : 'Select Theme'}</div>
-        <button onClick={onClose} style={{ border: "none", background: "none", fontSize: 18, cursor: "pointer" }}>✕</button>
-      </div>
-
-      <div style={{
-        padding: "8px 12px", borderRadius: 8, marginBottom: 16,
-        background: isPinned ? "#EEF2FF" : "#F8FAFC",
-        border: `1px solid ${isPinned ? "#C7D2FE" : "#E2E8F0"}`,
-        display: "flex", alignItems: "center", gap: 10, cursor: "pointer"
-      }} onClick={onPin}>
-        <span style={{ fontSize: 18 }}>{isPinned ? "📌" : "📍"}</span>
-        <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: isPinned ? "#4F46E5" : "#374151" }}>
-            {isPinned ? (lang === 'fa' ? 'تم فعلی ثابت است --- کلیک برای حذف فیکس' : 'Theme is pinned --- click to unpin') : 
-                        (lang === 'fa' ? 'کلیک کنید تا تم فعلی ثابت شود' : 'Click to pin current theme')}
-          </div>
-          <div style={{ fontSize: 10, color: "#6B7280" }}>
-            {isPinned ? (lang === 'fa' ? 'تم ثابت است' : 'Theme is pinned') : 
-                        (lang === 'fa' ? 'تصادفی خودکار' : 'Auto random')}
-          </div>
-        </div>
-        <div style={{
-          marginRight: "auto", padding: "2px 8px", borderRadius: 20, fontSize: 10,
-          background: isPinned ? "#C7D2FE" : "#E2E8F0",
-          color: isPinned ? "#4338CA" : "#6B7280", fontWeight: 600
-        }}>
-          {isPinned ? "📌 PINNED" : "AUTO RANDOM"}
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
-        {themes.map(theme => (
-          <div key={theme.id} onClick={() => onSelect(theme)} style={{
-            border: `2px solid ${current.id === theme.id ? theme.primary : "#E2E8F0"}`,
-            borderRadius: 12, padding: 12, cursor: "pointer", textAlign: "center",
-            background: current.id === theme.id ? theme.primary + "10" : "#FAFAFA",
-            transition: "all 0.2s", position: "relative"
-          }}>
-            {current.id === theme.id && (
-              <div style={{
-                position: "absolute", top: 6, right: 6, width: 18, height: 18,
-                borderRadius: "50%", background: theme.primary,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 10, color: "#fff"
-              }}>✓</div>
-            )}
-            <div style={{ display: "flex", gap: 3, justifyContent: "center", marginBottom: 8 }}>
-              {[theme.primary, theme.accent, theme.secondary].map((color, i) => (
-                <div key={i} style={{
-                  width: 16, height: 16, borderRadius: 4,
-                  background: color, border: "1px solid rgba(0,0,0,0.1)"
-                }}/>
-              ))}
-            </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: theme.primary }}>
-              {theme.name.fa}
-            </div>
-            <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 2 }}>
-              {theme.name.en}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const LanguageModal = ({ current, onSelect, onClose, onDownload, lang }) => {
-  const [search, setSearch] = useState("");
-  const filtered = LANGUAGES.filter(l =>
-    l.nativeName.toLowerCase().includes(search.toLowerCase()) ||
-    l.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
-      backdropFilter: "blur(4px)", zIndex: 10000,
-      display: "flex", alignItems: "center", justifyContent: "center"
-    }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="nag-theme-in" style={{
-        background: "#fff", borderRadius: 16, width: "90%", maxWidth: 540,
-        maxHeight: "85vh", overflowY: "auto",
-        boxShadow: "0 24px 64px rgba(0,0,0,0.25)"
-      }}>
-        <div style={{ height: 4, background: "linear-gradient(90deg,#6366F1,#8B5CF6,#EC4899)", borderRadius: "16px 16px 0 0" }}/>
-        <div style={{ padding: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 15 }}>🌐 {lang === 'fa' ? 'انتخاب زبان' : 'Select Language'}</div>
-            <button onClick={onClose} style={{ border: "none", background: "none", fontSize: 18, cursor: "pointer", color: "#6B7280" }}>✕</button>
-          </div>
-          <input
-            value={search} onChange={e => setSearch(e.target.value)}
-            placeholder={lang === 'fa' ? "جستجو..." : "Search..."}
-            style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid #E2E8F0", marginBottom: 14, fontSize: 12, outline: "none", boxSizing: "border-box" }}
-          />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 16 }}>
-            {filtered.map(l => (
-              <div key={l.code} onClick={() => onSelect(l.code)}
-                style={{
-                  padding: "10px 8px", borderRadius: 10, textAlign: "center",
-                  border: `2px solid ${current === l.code ? "#6366F1" : "#E2E8F0"}`,
-                  background: current === l.code ? "#EEF2FF" : "#FAFAFA",
-                  cursor: "pointer", transition: "all 0.15s", position: "relative"
-                }}>
-                {current === l.code && (
-                  <div style={{ position: "absolute", top: 4, right: 4, width: 16, height: 16, borderRadius: "50%", background: "#6366F1", color: "#fff", fontSize: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>✓</div>
-                )}
-                <div style={{ fontSize: 22, marginBottom: 4 }}>{l.flag}</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: current === l.code ? "#4F46E5" : "#111827" }}>{l.nativeName}</div>
-                <div style={{ fontSize: 9, color: "#9CA3AF", marginTop: 2 }}>{l.code.toUpperCase()}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button onClick={() => onDownload(current)} style={{
-              padding: "7px 14px", borderRadius: 8, border: "1px solid #E2E8F0",
-              background: "#fff", color: "#374151", cursor: "pointer", fontSize: 11
-            }}>⬇ {lang === 'fa' ? 'دانلود' : 'Download'} JSON</button>
-            <button onClick={onClose} style={{
-              padding: "7px 14px", borderRadius: 8, border: "none",
-              background: "#6366F1", color: "#fff", cursor: "pointer", fontSize: 11, fontWeight: 600
-            }}>✓ {lang === 'fa' ? 'بستن' : 'Close'}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+// Category Configuration
+const categoryConfig = {
+    food: { icon: '🍔', color: '#F59E0B', label: { fa: 'غذا', ar: 'طعام', en: 'Food' } },
+    transport: { icon: '🚗', color: '#3B82F6', label: { fa: 'حمل‌ونقل', ar: 'مواصلات', en: 'Transport' } },
+    shopping: { icon: '🛍️', color: '#EC4899', label: { fa: 'خرید', ar: 'تسوق', en: 'Shopping' } },
+    entertainment: { icon: '🎬', color: '#EF4444', label: { fa: 'سرگرمی', ar: 'ترفيه', en: 'Entertainment' } },
+    education: { icon: '📚', color: '#06B6D4', label: { fa: 'آموزش', ar: 'تعليم', en: 'Education' } },
+    other: { icon: '📦', color: '#6B7280', label: { fa: 'سایر', ar: 'أخرى', en: 'Other' } }
 };
 
-const PyramidFace = ({ position, color, label, onClick, style }) => {
-  return (
-    <div 
-      className={`pyramid-face ${position}`} 
-      style={{ 
-        '--face-color': color,
-        borderBottomColor: color,
-        ...style 
-      } as any}
-      onClick={onClick}
-    >
-      <div className="face-label">{label}</div>
-    </div>
-  );
-};
+// Initialize Application
+document.addEventListener('DOMContentLoaded', () => {
+    loadUserData();
+    initializeTheme();
+    initializeApp();
+});
 
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
-
-const BornaHoldingEntrance = () => {
-  // Theme state
-  const getInitialTheme = () => {
-    const pinned = localStorage.getItem("nag_theme_pinned");
-    const saved = localStorage.getItem("nag_theme");
-    if (pinned && saved) return THEMES.find(t => t.id === saved) || THEMES[0];
-    const randomIndex = Math.floor(Math.random() * THEMES.length);
-    return THEMES[randomIndex];
-  };
-
-  const [currentTheme, setCurrentTheme] = useState(getInitialTheme);
-  const [isPinned, setIsPinned] = useState(!!localStorage.getItem("nag_theme_pinned"));
-  const [showThemePanel, setShowThemePanel] = useState(false);
-  const th = currentTheme;
-
-  const applyTheme = (theme) => {
-    setCurrentTheme(theme);
-    localStorage.setItem("nag_theme", theme.id);
-    if (isPinned) localStorage.setItem("nag_theme_pinned", "true");
-  };
-
-  const togglePin = () => {
-    const newPinned = !isPinned;
-    setIsPinned(newPinned);
-    if (newPinned) {
-      localStorage.setItem("nag_theme_pinned", "true");
-      localStorage.setItem("nag_theme", currentTheme.id);
+function initializeApp() {
+    if (appState.user) {
+        showDashboard();
     } else {
-      localStorage.removeItem("nag_theme_pinned");
+        showWelcome();
     }
-  };
+    
+    setupEventListeners();
+}
 
-  // Language state
-  const [lang, setLang] = useState(() => localStorage.getItem("nag_lang") || "fa");
-  const [showLangModal, setShowLangModal] = useState(false);
-  const t = TRANSLATIONS[lang] || TRANSLATIONS["fa"];
-  const dir = LANGUAGES.find(l => l.code === lang)?.dir || "rtl";
+// Load User Data from LocalStorage
+function loadUserData() {
+    const userData = localStorage.getItem('nagai_user');
+    const settingsData = localStorage.getItem('nagai_settings');
+    const financeData = localStorage.getItem('nagai_finance');
+    const notebookData = localStorage.getItem('nagai_notebook');
+    const usersIndexData = localStorage.getItem('nagai_users_index');
+    
+    if (userData) appState.user = JSON.parse(userData);
+    if (usersIndexData) {
+        try {
+            appState.registeredUsers = JSON.parse(usersIndexData) || {};
+        } catch (e) {
+            appState.registeredUsers = {};
+        }
+    }
+    if (settingsData) {
+        const settings = JSON.parse(settingsData);
+        appState.theme = settings.theme || 1;
+        appState.themeMode = settings.themeMode || 'auto';
+        appState.language = settings.language || 'fa';
+        appState.zarinpalMerchantId = settings.zarinpalMerchantId || '';
+    }
+    if (financeData) {
+        const finance = JSON.parse(financeData);
+        appState.income = finance.income || [];
+        appState.expenses = finance.expenses || [];
+        appState.savingsGoals = finance.savingsGoals || [];
+        calculateFinanceTotals();
+    }
+    if (notebookData) {
+        appState.notebookGoals = JSON.parse(notebookData);
+    }
+    
+    applyLanguage(appState.language);
+}
 
-  const changeLang = (code) => {
-    setLang(code);
-    localStorage.setItem("nag_lang", code);
-    const langInfo = LANGUAGES.find(l => l.code === code);
-    document.documentElement.dir = langInfo?.dir || "rtl";
-    setShowLangModal(false);
-  };
+// Save Data to LocalStorage
+function saveUserData() {
+    localStorage.setItem('nagai_user', JSON.stringify(appState.user));
+    localStorage.setItem('nagai_settings', JSON.stringify({
+        theme: appState.theme,
+        themeMode: appState.themeMode,
+        language: appState.language,
+        zarinpalMerchantId: appState.zarinpalMerchantId
+    }));
+    localStorage.setItem('nagai_finance', JSON.stringify({
+        income: appState.income,
+        expenses: appState.expenses,
+        savingsGoals: appState.savingsGoals
+    }));
+    localStorage.setItem('nagai_notebook', JSON.stringify(appState.notebookGoals));
+    
+    if (appState.user && appState.user.mobile) {
+        appState.registeredUsers[appState.user.mobile] = appState.user.name;
+        localStorage.setItem('nagai_users_index', JSON.stringify(appState.registeredUsers));
+    }
+}
 
-  const downloadLangFile = (langCode) => {
-    const langInfo = LANGUAGES.find(l => l.code === langCode);
-    const data = {
-      language: langInfo,
-      module: "NAG Smart School - Borna Holding",
-      generatedAt: new Date().toISOString(),
-      version: "1.0.0",
-      rtl: langInfo?.dir === "rtl",
-      translations: TRANSLATIONS[langCode] || {}
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `NAG_lang_${langCode}.json`; a.click();
-    URL.revokeObjectURL(url);
-  };
+// Initialize Theme
+function initializeTheme() {
+    // Check if auto mode is on
+    if (appState.themeMode === 'auto') {
+        // Random theme between 1-9
+        appState.theme = Math.floor(Math.random() * 9) + 1;
+    }
+    applyTheme(appState.theme);
+}
 
-  // Occasion theme
-  const currentOccasion = useOccasionTheme(lang);
-  const [occasionDismissed, setOccasionDismissed] = useState(false);
-  const activeTheme = (currentOccasion && !occasionDismissed && !isPinned)
-    ? { ...currentTheme, ...currentOccasion.theme }
-    : currentTheme;
+// Apply Theme
+function applyTheme(themeNumber) {
+    document.documentElement.setAttribute('data-theme', themeNumber);
+    appState.theme = themeNumber;
+}
 
-  // Set document direction
-  useEffect(() => {
-    document.documentElement.dir = dir;
-  }, [dir]);
+// Show Welcome Screen
+function showWelcome() {
+    const welcome = document.getElementById('welcomeScreen');
+    const dashboard = document.getElementById('dashboardScreen');
+    if (welcome) {
+        welcome.classList.add('active');
+        welcome.style.display = 'block';
+    }
+    if (dashboard) {
+        dashboard.classList.remove('active');
+        dashboard.style.display = 'none';
+    }
+}
 
-  // Pyramid faces data
-  const pyramidFaces = [
-    { position: 'front', label: t.sports, color: activeTheme.primary },
-    { position: 'right', label: t.highschool, color: activeTheme.accent },
-    { position: 'back', label: t.language, color: activeTheme.secondary },
-    { position: 'left', label: t.technical, color: activeTheme.muted }
-  ];
+// Show Dashboard
+function showDashboard() {
+    const welcome = document.getElementById('welcomeScreen');
+    const dashboard = document.getElementById('dashboardScreen');
+    if (welcome) {
+        welcome.classList.remove('active');
+        welcome.style.display = 'none';
+    }
+    if (dashboard) {
+        dashboard.classList.add('active');
+        dashboard.style.display = 'block';
+    }
+    updateDashboard();
+}
 
-  const handleFaceClick = (section) => {
-    console.log(`Navigating to: ${section}`);
-    // In a real app, this would navigate to the specific section
-    alert(`${t.clickToEnter}: ${section}`);
-  };
+// Update Dashboard
+function updateDashboard() {
+    // Update stats
+    document.getElementById('totalBalance').textContent = formatCurrency(appState.balance);
+    document.getElementById('totalIncome').textContent = formatCurrency(appState.totalIncome);
+    document.getElementById('totalExpenses').textContent = formatCurrency(appState.totalExpenses);
+    
+    // Update user info
+    if (appState.user) {
+        document.getElementById('dashboardTitle').textContent = `${translations[appState.language].dashboardTitle} - ${appState.user.name}`;
+        document.getElementById('profileInfo').textContent = `${appState.user.name} - ${appState.user.age} ${getAgeUnit()}`;
+    }
+    
+    // Render activities
+    renderActivities();
+}
 
-  return (
-    <div style={{ 
-      direction: dir, 
-      fontFamily: dir === "rtl" ? "'Vazirmatn', 'Tahoma', sans-serif" : "'Inter', 'Arial', sans-serif",
-      background: activeTheme.bg,
-      color: activeTheme.text,
-      minHeight: "100vh",
-      transition: "all 0.3s ease"
-    }}>
-      <style>{animationsCSS}</style>
-      
-      {/* Top Bar */}
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        padding: "12px 24px",
-        background: activeTheme.surface,
-        borderBottom: `1px solid ${activeTheme.border}`,
-        boxShadow: `0 2px 8px ${activeTheme.shadow}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        zIndex: 100,
-        backdropFilter: "blur(8px)",
-        backgroundColor: `${activeTheme.surface}CC`
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ fontSize: 20 }}>🏛️</div>
-          <div style={{ fontWeight: 700, fontSize: 14 }}>
-            {t.bornaHolding}
-          </div>
-        </div>
-        
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {/* Theme Toggle Button */}
-          <button onClick={() => setShowThemePanel(true)} style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "5px 12px", borderRadius: 20, border: `1px solid ${activeTheme.border}`,
-            background: activeTheme.surface, cursor: "pointer", fontSize: 11,
-            color: activeTheme.text
-          }}>
-            <div style={{ display: "flex", gap: 2 }}>
-              {[activeTheme.primary, activeTheme.accent].map((c, i) => (
-                <div key={i} style={{ width: 10, height: 10, borderRadius: 2, background: c }}/>
-              ))}
+// Format Currency
+function formatCurrency(amount) {
+    if (appState.language === 'fa') {
+        return new Intl.NumberFormat('fa-IR').format(amount) + ' ' + (appState.language === 'fa' ? 'تومان' : appState.language === 'ar' ? 'ريال' : 'T');
+    }
+    return new Intl.NumberFormat('en-US').format(amount) + ' T';
+}
+
+// Get Age Unit
+function getAgeUnit() {
+    const lang = appState.language;
+    if (lang === 'fa') return 'سال';
+    if (lang === 'ar') return 'سنة';
+    return 'years';
+}
+
+// Render Activities
+function renderActivities() {
+    const activitiesList = document.getElementById('transactionsList');
+    const allActivities = [...appState.income.map(i => ({...i, type: 'income'})), ...appState.expenses.map(e => ({...e, type: 'expense'}))];
+    allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    const recentActivities = allActivities.slice(0, 5);
+    
+    if (recentActivities.length === 0) {
+        activitiesList.innerHTML = `
+            <div class="empty-state">
+                <p>${translations[appState.language].emptyStateText}</p>
             </div>
-            <span>{isPinned ? "📌" : "🎨"}</span>
-          </button>
+        `;
+        return;
+    }
+    
+    activitiesList.innerHTML = recentActivities.map(activity => {
+        const config = categoryConfig[activity.category] || categoryConfig.other;
+        const lang = appState.language;
+        return `
+            <div class="transaction-item">
+                <div class="transaction-icon ${activity.type}">${config.icon}</div>
+                <div class="transaction-details">
+                    <h4>${activity.description || config.label[lang]}</h4>
+                    <p>${config.label[lang]}</p>
+                </div>
+                <div class="transaction-amount ${activity.type}">
+                    ${activity.type === 'income' ? '+' : '-'}${formatCurrency(activity.amount)}
+                    <span class="transaction-date">${formatDate(activity.date)}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
-          {/* Language Toggle Button */}
-          <button onClick={() => setShowLangModal(true)} style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "5px 12px", borderRadius: 20,
-            border: "1px solid #E2E8F0", background: "#fff",
-            cursor: "pointer", fontSize: 11
-          }}>
-            <span>{LANGUAGES.find(l => l.code === lang)?.flag}</span>
-            <span>{LANGUAGES.find(l => l.code === lang)?.nativeName}</span>
-            <span style={{ color: "#9CA3AF" }}>▾</span>
-          </button>
+// Format Date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    if (appState.language === 'fa') {
+        return date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    }
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// Calculate Finance Totals
+function calculateFinanceTotals() {
+    appState.totalIncome = appState.income.reduce((sum, i) => sum + i.amount, 0);
+    appState.totalExpenses = appState.expenses.reduce((sum, e) => sum + e.amount, 0);
+    appState.balance = appState.totalIncome - appState.totalExpenses;
+}
+
+// Apply Language
+function applyLanguage(lang) {
+    appState.language = lang;
+    appState.direction = lang === 'fa' ? 'rtl' : lang === 'ar' ? 'rtl' : 'ltr';
+    
+    document.documentElement.setAttribute('dir', appState.direction);
+    document.documentElement.setAttribute('lang', lang);
+    
+    // Update UI text
+    const t = translations[lang];
+    if (t) {
+        document.getElementById('welcomeTagline').textContent = t.welcomeTagline;
+        document.getElementById('labelName').textContent = t.labelName;
+        document.getElementById('labelAge').textContent = t.labelAge;
+        document.getElementById('startBtn').textContent = t.startBtn;
+        document.getElementById('dashboardTitle').textContent = `${t.dashboardTitle} - ${appState.user?.name || ''}`;
+        document.getElementById('statBalance').textContent = t.statBalance;
+        document.getElementById('statIncome').textContent = t.statIncome;
+        document.getElementById('statExpense').textContent = t.statExpense;
+        document.getElementById('mainActionsTitle').textContent = t.mainActionsTitle;
+        document.getElementById('actionNutrition').textContent = t.actionNutrition;
+        document.getElementById('actionSports').textContent = t.actionSports;
+        document.getElementById('actionAcademic').textContent = t.actionAcademic;
+        document.getElementById('actionPlanning').textContent = t.actionPlanning;
+        document.getElementById('actionNotebook').textContent = t.actionNotebook;
+        document.getElementById('actionRecharge').textContent = t.actionRecharge;
+        document.getElementById('actionFinance').textContent = t.actionFinance;
+        document.getElementById('actionGallery').textContent = t.actionGallery;
+        document.getElementById('recentTitle').textContent = t.recentTitle;
+        document.getElementById('emptyStateText').textContent = t.emptyStateText;
+        document.getElementById('chatTitle').textContent = t.chatTitle;
+        document.getElementById('chatWelcome').textContent = t.chatWelcome;
+        document.getElementById('tabNutrition').textContent = t.tabNutrition;
+        document.getElementById('tabSports').textContent = t.tabSports;
+        document.getElementById('tabAcademic').textContent = t.tabAcademic;
+        document.getElementById('tabPlanning').textContent = t.tabPlanning;
+        document.getElementById('navHome').textContent = t.navHome;
+        document.getElementById('navNotebook').textContent = t.navNotebook;
+        document.getElementById('navRecharge').textContent = t.navRecharge;
+        document.getElementById('navFinance').textContent = t.navFinance;
+    }
+    
+    // Update language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    
+    // Save settings
+    saveUserData();
+    updateDashboard();
+}
+
+// Setup Event Listeners
+function setupEventListeners() {
+    // Registration Form
+    document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
+    
+    // Language Selector
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+    });
+    
+    // Theme Button
+    document.getElementById('themeBtn').addEventListener('click', () => openModal('themeModal'));
+    
+    // Theme Mode Selection
+    document.querySelectorAll('.theme-mode').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.theme-mode').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            appState.themeMode = btn.dataset.mode;
+            
+            if (appState.themeMode === 'auto') {
+                appState.theme = Math.floor(Math.random() * 9) + 1;
+                applyTheme(appState.theme);
+            }
+            saveUserData();
+        });
+    });
+    
+    // Theme Color Selection
+    document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyTheme(parseInt(btn.dataset.theme));
+            appState.themeMode = 'fixed';
+            document.querySelectorAll('.theme-mode').forEach(b => b.classList.remove('active'));
+            document.querySelector('.theme-mode[data-mode="fixed"]').classList.add('active');
+            saveUserData();
+        });
+    });
+    
+    // Action Cards
+    document.querySelectorAll('.action-card').forEach(btn => {
+        btn.addEventListener('click', handleActionClick);
+    });
+    
+    // Modal Close Buttons
+    document.querySelectorAll('.modal-close, [data-close]').forEach(btn => {
+        btn.addEventListener('click', closeModals);
+    });
+    
+    // Quantum Chat Tabs
+    document.querySelectorAll('.quantum-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.quantum-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            appState.currentChatType = btn.dataset.type;
+            // Clear chat and show welcome for this chatbot type
+            clearChatAndShowWelcome();
+        });
+    });
+    
+    // Chat Send
+    document.getElementById('sendChatBtn').addEventListener('click', sendChatMessage);
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage();
+    });
+    
+    // Quick Questions
+    document.querySelectorAll('.quick-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const question = btn.dataset.question;
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        });
+    });
+    
+    // Notebook Save
+    document.getElementById('saveGoalBtn').addEventListener('click', saveNotebookGoal);
+    
+    // Notebook Tabs
+    document.querySelectorAll('.notebook-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.notebook-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // Operator Selection
+    document.querySelectorAll('.operator-btn').forEach(btn => {
+        btn.addEventListener('click', handleOperatorSelect);
+    });
+    
+    // Amount Selection
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.addEventListener('click', handleAmountSelect);
+    });
+    
+    // Recharge Button
+    document.getElementById('rechargeBtn').addEventListener('click', handleRecharge);
+    
+    // Finance Tabs
+    document.querySelectorAll('.finance-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.finance-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.getElementById('incomeSection').style.display = 'none';
+            document.getElementById('expensesSection').style.display = 'none';
+            document.getElementById('assetsSection').style.display = 'none';
+            
+            if (btn.dataset.tab === 'income') {
+                document.getElementById('incomeSection').style.display = 'block';
+            } else if (btn.dataset.tab === 'expenses') {
+                document.getElementById('expensesSection').style.display = 'block';
+            } else {
+                document.getElementById('assetsSection').style.display = 'block';
+            }
+        });
+    });
+    
+    // Add Income
+    document.getElementById('addIncomeBtn').addEventListener('click', addIncome);
+    
+    // Add Expense
+    document.getElementById('addExpenseBtn').addEventListener('click', addExpense);
+    
+    // Add Savings Goal
+    document.getElementById('addSavingsGoalBtn').addEventListener('click', addSavingsGoal);
+    
+    // Gallery Tabs
+    document.querySelectorAll('.gallery-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.gallery-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (btn.dataset.tab === 'logo') {
+                document.getElementById('logoSection').style.display = 'block';
+                document.getElementById('photosSection').style.display = 'none';
+            } else {
+                document.getElementById('logoSection').style.display = 'none';
+                document.getElementById('photosSection').style.display = 'block';
+            }
+        });
+    });
+    
+    // Logo Upload
+    document.getElementById('logoUploadArea').addEventListener('click', () => {
+        document.getElementById('logoInput').click();
+    });
+    
+    document.getElementById('logoInput').addEventListener('change', handleLogoUpload);
+    
+    // Settings Buttons
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        document.getElementById('settingsPanel').classList.add('active');
+    });
+    
+    document.getElementById('themeSettingsBtn').addEventListener('click', () => {
+        closePanels();
+        openModal('themeModal');
+    });
+    
+    document.getElementById('zarinpalSettingsBtn').addEventListener('click', () => {
+        closePanels();
+        openModal('zarinpalModal');
+    });
+    
+    // Zarinpal Save
+    document.getElementById('saveZarinpalBtn').addEventListener('click', saveZarinpalSettings);
+    
+    // Panel Close
+    document.querySelectorAll('.panel-close').forEach(btn => {
+        btn.addEventListener('click', closePanels);
+    });
+    
+    // Mobile Navigation
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', handleNavClick);
+    });
+}
+
+// Handle Registration
+function handleRegistration(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('studentName').value.trim();
+    const age = parseInt(document.getElementById('studentAge').value);
+    const mobile = document.getElementById('studentMobile').value.trim();
+    
+    if (!name || !age || !mobile) {
+        showToast('لطفا اطلاعات را کامل وارد کنید', 'error');
+        return;
+    }
+    
+    // Validate mobile number
+    const mobileRegex = /^09[0-9]{9}$/;
+    if (!mobileRegex.test(mobile)) {
+        showToast('شماره موبایل معتبر نیست', 'error');
+        return;
+    }
+    
+    const existingName = appState.registeredUsers[mobile];
+    if (existingName && existingName !== name) {
+        showToast(`این شماره قبلا با نام "${existingName}" ثبت شده است`, 'error');
+        return;
+    }
+    
+    appState.user = {
+        name,
+        age,
+        mobile,
+        createdAt: new Date().toISOString()
+    };
+    
+    saveUserData();
+    showDashboard();
+    showToast('خوش آمدی! 🌟', 'success');
+}
+
+// Handle Action Click
+function handleActionClick(e) {
+    const action = e.currentTarget.dataset.action;
+    
+    switch(action) {
+        case 'chat-quantum':
+            openModal('quantumChatModal');
+            // Clear and show welcome for the current chatbot
+            clearChatAndShowWelcome();
+            break;
+        case 'notebook':
+            openModal('notebookModal');
+            renderNotebookGoals();
+            break;
+        case 'mobile-charge':
+            openModal('rechargeModal');
+            break;
+        case 'finance':
+            openModal('financeModal');
+            break;
+        case 'gallery':
+            openModal('galleryModal');
+            break;
+        default:
+            showToast('به زودی...', 'info');
+    }
+}
+
+// Open Modal
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Close Modals
+function closeModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('active');
+    });
+    document.body.style.overflow = '';
+}
+
+// Close Panels
+function closePanels() {
+    document.querySelectorAll('.panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+}
+
+// Handle Operator Select
+function handleOperatorSelect(e) {
+    document.querySelectorAll('.operator-btn').forEach(btn => btn.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+}
+
+// Handle Amount Select
+function handleAmountSelect(e) {
+    const amount = e.currentTarget.dataset.amount;
+    
+    document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    
+    if (amount === 'custom') {
+        document.querySelector('.custom-amount-input').style.display = 'block';
+    } else {
+        document.querySelector('.custom-amount-input').style.display = 'none';
+    }
+}
+
+// Handle Recharge
+function handleRecharge() {
+    const mobile = document.getElementById('rechargeNumber').value.trim();
+    const activeOperator = document.querySelector('.operator-btn.active');
+    const activeAmount = document.querySelector('.amount-btn.active');
+    
+    if (!mobile) {
+        showToast('لطفا شماره موبایل را وارد کنید', 'error');
+        return;
+    }
+    
+    if (!validateMobile(mobile)) {
+        showToast('شماره موبایل معتبر نیست', 'error');
+        return;
+    }
+    
+    if (!activeOperator) {
+        showToast('لطفا اپراتور را انتخاب کنید', 'error');
+        return;
+    }
+    
+    if (!activeAmount) {
+        showToast('لطفا مبلغ را انتخاب کنید', 'error');
+        return;
+    }
+    
+    let amount = activeAmount.dataset.amount;
+    if (amount === 'custom') {
+        amount = document.getElementById('customAmount').value;
+        if (!amount || amount <= 0) {
+            showToast('لطفا مبلغ را وارد کنید', 'error');
+            return;
+        }
+    }
+    
+    // Process payment via Zarinpal
+    processZarinpalPayment(mobile, amount);
+}
+
+// Validate Mobile
+function validateMobile(number) {
+    const iranianMobileRegex = /^9[0-9]{9}$/;
+    return iranianMobileRegex.test(number);
+}
+
+// Process Zarinpal Payment
+function processZarinpalPayment(mobile, amount) {
+    showToast('در حال اتصال به زرین‌پال...', 'info');
+    
+    if (!appState.zarinpalMerchantId) {
+        // Demo mode - simulate payment
+        simulatePayment(mobile, amount);
+        return;
+    }
+    
+    // Use sandbox URL for testing
+    const ZARINPAL_URL = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json';
+    
+    const callbackUrl = window.location.origin + '/?payment=verify';
+    
+    fetch(ZARINPAL_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            merchant_id: appState.zarinpalMerchantId,
+            amount: parseInt(amount),
+            callback_url: callbackUrl,
+            description: `شارژ موبایل ${mobile}`,
+            mobile: mobile
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.data && data.data.authority) {
+            // Redirect to payment page
+            const paymentUrl = `https://sandbox.zarinpal.com/pg/StartPay/${data.data.authority}`;
+            window.location.href = paymentUrl;
+        } else {
+            // Fallback to simulation if API fails
+            console.error('Zarinpal error:', data);
+            simulatePayment(mobile, amount);
+        }
+    })
+    .catch(err => {
+        console.error('Payment error:', err);
+        // Fallback to simulation on error
+        simulatePayment(mobile, amount);
+    });
+}
+
+// Simulate Payment
+function simulatePayment(mobile, amount) {
+    // Add as expense
+    const expense = {
+        id: Date.now(),
+        amount: parseFloat(amount),
+        category: 'other',
+        description: `شارژ موبایل ${mobile}`,
+        date: new Date().toISOString()
+    };
+    
+    appState.expenses.unshift(expense);
+    calculateFinanceTotals();
+    saveUserData();
+    updateDashboard();
+    closeModals();
+    
+    showToast(`موبایل ${mobile} با موفقیت شارژ شد! 📱`, 'success');
+}
+
+// Send Chat Message
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Add user message
+    addChatMessage(message, 'user');
+    input.value = '';
+    
+    // Show typing indicator
+    const chatMessages = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="message-avatar">🌟</div>
+        <div class="message-content">
+            <p>در حال نوشتن...</p>
         </div>
-      </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Get current language
+    const currentLang = appState.language || 'fa';
+    const chatType = appState.currentChatType || 'academic';
+    
+    // Call API
+    fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            message: message,
+            model: chatType,
+            language: currentLang
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Remove typing indicator
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        
+        if (data.success) {
+            addChatMessage(data.response, 'bot');
+        } else {
+            addChatMessage('متأسفانه مشکلی پیش آمد. لطفاً دوباره تلاش کنید.', 'bot');
+        }
+    })
+    .catch(err => {
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        addChatMessage('خطا در اتصال. سرور را بررسی کنید.', 'bot');
+    });
+}
 
-      {/* Occasion Banner */}
-      {currentOccasion && !occasionDismissed && (
-        <div style={{
-          position: "fixed",
-          top: 60,
-          left: 0,
-          right: 0,
-          background: `linear-gradient(135deg, ${currentOccasion.theme.primary}, ${currentOccasion.theme.accent})`,
-          color: "#fff", padding: "8px 16px", fontSize: 12,
-          display: "flex", alignItems: "center", gap: 10, justifyContent: "center",
-          zIndex: 99
-        }}>
-          <span style={{ fontSize: 18 }}>{currentOccasion.emoji}</span>
-          <strong>{currentOccasion.name[lang] || currentOccasion.name.fa}</strong>
-          <span style={{ opacity: 0.8 }}>--- {t.occasionActive}</span>
-          <button onClick={() => setOccasionDismissed(true)} style={{
-            marginRight: "auto", background: "rgba(255,255,255,0.2)",
-            border: "1px solid rgba(255,255,255,0.4)", borderRadius: 6,
-            color: "#fff", padding: "2px 8px", cursor: "pointer", fontSize: 11
-          }}>✕ {t.dismiss}</button>
+// Add Chat Message
+function addChatMessage(message, sender) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar">${sender === 'bot' ? '🌟' : '👤'}</div>
+        <div class="message-content">
+            <p>${message}</p>
         </div>
-      )}
+        <span class="message-time">${time}</span>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
-      {/* Main Content */}
-      <div style={{
-        paddingTop: currentOccasion && !occasionDismissed ? "120px" : "80px",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        transition: "padding-top 0.3s ease"
-      }}>
-        {/* Welcome Text */}
-        <div className="nag-fade-up" style={{ 
-          textAlign: "center", 
-          marginBottom: 40,
-          padding: "0 20px"
-        }}>
-          <h1 style={{ 
-            fontSize: "clamp(32px, 8vw, 64px)", 
-            margin: 0,
-            color: activeTheme.primary,
-            textShadow: `2px 2px 4px ${activeTheme.shadow}`,
-            fontWeight: 800,
-            letterSpacing: dir === "rtl" ? "normal" : "1px"
-          }}>
-            {t.welcome}
-          </h1>
-          <p style={{ 
-            fontSize: "clamp(14px, 4vw, 18px)", 
-            color: activeTheme.muted,
-            marginTop: 8
-          }}>
-            {t.subtitle}
-          </p>
+// Clear Chat and Show Welcome for Current Chat Type
+function clearChatAndShowWelcome() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = '';
+    
+    const currentLang = appState.language || 'fa';
+    const chatType = appState.currentChatType || 'academic';
+    
+    // Different welcome messages for each chatbot type
+    const welcomeMessages = {
+        fa: {
+            nutrition: 'سلام عزیزم! 🍎 من متخصص تغذیه و سلامت هستم. درباره غذاهای سالم، میوه‌ها، ویتامین‌ها و عادت‌های سلامتی بپرس! چطور می‌تونم کمکت کنم؟',
+            sports: 'سلام قهرمان! ⚽ من مربی ورزشی هستم. درباره تمرین، ورزش‌های مختلف، و عضلات بپرس! چطور می‌تونم کمکت کنم؟',
+            academic: 'سلام دانش‌آموز عزیز! 📚 من مشاور تحصیلی هستم. درباره درس خواندن، امتحانات، برنامه‌ریزی و رشته‌ها بپرس! چطور می‌تونم کمکت کنم؟',
+            planning: 'سلام برنامه‌ریز! 📖 من متخصص برنامه‌ریزی درسی هستم. درباره اینکه چطور درس‌هایت را برنامه‌ریزی کنی بپرس! چطور می‌تونم کمکت کنم؟'
+        },
+        en: {
+            nutrition: "Hello sweetie! 🍎 I'm a nutrition and health expert. Ask me about healthy foods, fruits, vitamins, and healthy habits! How can I help you?",
+            sports: "Hello champion! ⚽ I'm a sports coach. Ask me about exercises, different sports, and muscles! How can I help you?",
+            academic: "Hello dear student! 📚 I'm an academic counselor. Ask me about studying, exams, planning, and majors! How can I help you?",
+            planning: "Hello planner! 📖 I'm a study planning expert. Ask me about how to plan your studies! How can I help you?"
+        },
+        ar: {
+            nutrition: 'مرحباً يا عزيزي! 🍎 أنا خبير التغذية والصحة. اسألني عن foods صحية وفواكه وفيتامينات وعادات صحية! كيف يمكنني مساعدتك؟',
+            sports: 'مرحباً يا بطل! ⚽ أنا مدرب رياضي. اسألني عن تمارين ورياضات مختلفة وعضلات! كيف يمكنني مساعدتك؟',
+            academic: 'مرحباً يا طالب عزيز! 📚 أنا مرشد أكاديمي. اسألني عن الدراسة والامتحانات والتخطيط والتخصصات! كيف يمكنني مساعدتك؟',
+            planning: 'مرحباً يا مخطط! 📖 أنا خبير تخطيط الدراسي. اسألني عن كيفية تخطيط دراستك! كيف يمكنني مساعدتك؟'
+        }
+    };
+    
+    const welcomeMsg = welcomeMessages[currentLang][chatType] || welcomeMessages.fa.academic;
+    addChatMessage(welcomeMsg, 'bot');
+    
+    // Update quick questions based on chatbot type
+    updateQuickQuestions(chatType, currentLang);
+}
+
+// Update Quick Questions for Current Chat Type
+function updateQuickQuestions(chatType, language) {
+    const quickQuestionsContainer = document.getElementById('quickQuestions');
+    if (!quickQuestionsContainer) return;
+    
+    const questions = {
+        fa: {
+            nutrition: [
+                { text: '🍎 صبحانه سالم چی بخورم؟', question: 'چه صبحانه سالمی پیشنهاد میکنی؟' },
+                { text: '💧 چقدر آب بخورم؟', question: 'روزانه چقدر آب باید بخورم؟' },
+                { text: '🥗 میوه‌های بهترین کدامند؟', question: 'کدام میوه‌ها برای من بهترند؟' }
+            ],
+            sports: [
+                { text: '🏃 ورزش صبحگاهی چطور؟', question: 'بهترین زمان برای ورزش صبحگاهی چه زمانی است؟' },
+                { text: '💪 تمرین عضلات چطور؟', question: 'چطور عضلات قوی داشته باشم؟' },
+                { text: '⚽ ورزش مورد علاقه چی بازی کنم؟', question: 'کدام ورزش برای سن من بهتر است؟' }
+            ],
+            academic: [
+                { text: '📚 چطور درس بخوانم؟', question: 'چطور درس بخوانم تا یاد بگیرم؟' },
+                { text: '📝 امتحان چطور قبول شوم؟', question: 'چطور برای امتحانات درس بخوانم؟' },
+                { text: '🎯 هدف تحصیلی چی بذارم؟', question: 'چه هدف تحصیلی برای خودم بذارم؟' }
+            ],
+            planning: [
+                { text: '📋 برنامه هفتگی چطور؟', question: 'چطور یک برنامه درسی هفتگی بنویسم؟' },
+                { text: '⏰ زمان‌بندی چطور؟', question: 'چطور زمانم را مدیریت کنم؟' },
+                { text: '📖 درس‌ها را چطور تقسیم کنم؟', question: 'چطور درس‌ها را برای مطالعه تقسیم کنم؟' }
+            ]
+        },
+        en: {
+            nutrition: [
+                { text: '🍎 Healthy Breakfast?', question: 'What is a healthy breakfast for me?' },
+                { text: '💧 How much water?', question: 'How much water should I drink daily?' },
+                { text: '🥗 Best fruits?', question: 'Which fruits are best for me?' }
+            ],
+            sports: [
+                { text: '🏃 Morning exercise?', question: 'What is the best time for morning exercise?' },
+                { text: '💪 Build muscles?', question: 'How can I build strong muscles?' },
+                { text: '⚽ Best sport?', question: 'Which sport is best for my age?' }
+            ],
+            academic: [
+                { text: '📚 How to study?', question: 'How should I study to learn?' },
+                { text: '📝 Pass exams?', question: 'How to study for exams to pass?' },
+                { text: '🎯 Set goals?', question: 'What academic goals should I set?' }
+            ],
+            planning: [
+                { text: '📋 Weekly plan?', question: 'How to write a weekly study plan?' },
+                { text: '⏰ Time management?', question: 'How to manage my time?' },
+                { text: '📖 Divide subjects?', question: 'How to divide subjects for study?' }
+            ]
+        }
+    };
+    
+    const langQuestions = questions[language] || questions.fa;
+    const typeQuestions = langQuestions[chatType] || langQuestions.academic;
+    
+    quickQuestionsContainer.innerHTML = typeQuestions.map(q => 
+        `<button class="quick-question" data-question="${q.question}">${q.text}</button>`
+    ).join('');
+    
+    // Re-attach event listeners
+    document.querySelectorAll('.quick-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const question = btn.dataset.question;
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        });
+    });
+}
+
+// Generate AI Response
+function generateAIResponse() {
+    const type = appState.currentChatType;
+    const responses = {
+        nutrition: [
+            '🍎 برای تغذیه سالم، میوه و سبزیجات تازه بخور!',
+            '🥗 سعی کن روزی ۵ وعده میوه و سبزی بخوری!',
+            '💧 آب فراموش نشه! حداقل ۸ لیوان در روز',
+            '🍞 نون رو با سبوس بخور، فیبر بیشتری داره!',
+            '🍗 پروتئین رو از مرغ، ماهی و حبوبات بگیر!'
+        ],
+        sports: [
+            '🏃 هر روز حداقل ۳۰ دقیقه ورزش کن!',
+            '💪 یه برنامه ورزشی منظم داشته باش',
+            '🚶 پیاده‌روی صبحگاهی خیلی مفیده!',
+            '🏊 شنا یکی از بهترین ورزش‌هاست',
+            '🧘 یوگا باعث آرامش و تمرکز میشه!'
+        ],
+        academic: [
+            '📚 برای هر درس، روزی ۱-۲ ساعت وقت بذار!',
+            '📝 خلاصه‌نویسی فراموش نشه!',
+            '🔄 مرور درس‌ها خیلی مهمه!',
+            '💡 سوال بپرس، خجالت نکش!',
+            '📖 کتاب درسی رو بارها و بارها بخون!'
+        ],
+        planning: [
+            '📋 برای هر روز، یه لیست از کارها بنویس!',
+            '⏰ اول کارهای سخت رو انجام بده!',
+            '🎯 اهداف کوتاه‌مدت و بلندمدت داشته باش!',
+            '📅 هر هفته یه برنامه جدید بنویس!',
+            '✅ کارهای انجام شده رو خط بزن، انگیزه میگیری!'
+        ]
+    };
+    
+    const typeResponses = responses[type] || responses.academic;
+    return typeResponses[Math.floor(Math.random() * typeResponses.length)];
+}
+
+// Save Notebook Goal
+function saveNotebookGoal() {
+    const input = document.getElementById('goalInput');
+    const goalText = input.value.trim();
+    
+    if (!goalText) {
+        showToast('لطفا یک هدف بنویسید', 'error');
+        return;
+    }
+    
+    const goal = {
+        id: Date.now(),
+        text: goalText,
+        date: new Date().toISOString(),
+        completed: false
+    };
+    
+    appState.notebookGoals.unshift(goal);
+    saveUserData();
+    input.value = '';
+    
+    // Show AI motivation
+    showAIMotivation();
+    
+    // Render goals
+    renderNotebookGoals();
+    
+    showToast('هدف ذخیره شد! 🎯', 'success');
+}
+
+// Show AI Motivation
+function showAIMotivation() {
+    const type = appState.currentChatType;
+    const messages = motivationMessages[type] || motivationMessages.academic;
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    const motivationDiv = document.getElementById('aiMotivation');
+    document.getElementById('motivationText').textContent = randomMessage;
+    motivationDiv.style.display = 'block';
+    
+    setTimeout(() => {
+        motivationDiv.style.display = 'none';
+    }, 10000);
+}
+
+// Render Notebook Goals
+function renderNotebookGoals() {
+    const goalsList = document.getElementById('goalsList');
+    
+    if (appState.notebookGoals.length === 0) {
+        goalsList.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:20px;">هنوز هدفی ثبت نشده</p>';
+        return;
+    }
+    
+    goalsList.innerHTML = appState.notebookGoals.map(goal => `
+        <div class="goal-item" style="background:var(--glass-background);padding:16px;border-radius:12px;margin-bottom:8px;">
+            <p style="font-size:14px;">${goal.text}</p>
+            <small style="color:var(--text-secondary);">${formatDate(goal.date)}</small>
         </div>
+    `).join('');
+}
 
-        {/* Rotating Pyramid */}
-        <div className="pyramid-container">
-          <div className="pyramid rotate-pyramid" style={{
-            transformStyle: "preserve-3d"
-          }}>
-            {pyramidFaces.map((face, index) => (
-              <PyramidFace
-                key={index}
-                position={face.position}
-                color={face.color}
-                label={face.label}
-                onClick={() => handleFaceClick(face.label)}
-              />
-            ))}
-            <div className="pyramid-base" style={{
-              background: `rgba(255,255,255,0.1)`,
-              backdropFilter: "blur(5px)",
-              border: `1px solid ${activeTheme.border}`
-            }}/>
-          </div>
-        </div>
+// Add Income
+function addIncome() {
+    const amount = parseFloat(document.getElementById('monthlyIncome').value);
+    const source = document.getElementById('incomeSource').value;
+    
+    if (!amount || amount <= 0) {
+        showToast('لطفا مبلغ را وارد کنید', 'error');
+        return;
+    }
+    
+    const income = {
+        id: Date.now(),
+        amount,
+        source,
+        date: new Date().toISOString()
+    };
+    
+    appState.income.unshift(income);
+    calculateFinanceTotals();
+    saveUserData();
+    updateDashboard();
+    
+    document.getElementById('monthlyIncome').value = '';
+    showToast('درآمد اضافه شد! 💰', 'success');
+}
 
-        {/* Decorative Elements */}
-        <div style={{
-          position: "absolute",
-          bottom: 30,
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          color: activeTheme.muted,
-          fontSize: 11,
-          opacity: 0.7
-        }}>
-          <span className="nag-pulse">✦ {t.entrance} ✦</span>
-        </div>
+// Add Expense
+function addExpense() {
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+    const category = document.getElementById('expenseCategory').value;
+    const description = document.getElementById('expenseDescription').value;
+    
+    if (!amount || amount <= 0) {
+        showToast('لطفا مبلغ را وارد کنید', 'error');
+        return;
+    }
+    
+    const expense = {
+        id: Date.now(),
+        amount,
+        category,
+        description,
+        date: new Date().toISOString()
+    };
+    
+    appState.expenses.unshift(expense);
+    calculateFinanceTotals();
+    saveUserData();
+    updateDashboard();
+    
+    document.getElementById('expenseAmount').value = '';
+    document.getElementById('expenseDescription').value = '';
+    showToast('هزینه ثبت شد! 📊', 'success');
+}
 
-        {/* Entrance text */}
-        <div className="float" style={{
-          marginTop: 40,
-          padding: "12px 24px",
-          background: activeTheme.surface,
-          borderRadius: 40,
-          boxShadow: `0 4px 20px ${activeTheme.shadow}`,
-          border: `1px solid ${activeTheme.border}`,
-          color: activeTheme.primary,
-          fontSize: 14,
-          fontWeight: 600
-        }}>
-          {t.pyramidNav}
-        </div>
-      </div>
+// Add Savings Goal
+function addSavingsGoal() {
+    const goal = document.getElementById('savingsGoal').value.trim();
+    const amount = parseFloat(document.getElementById('savingsGoalAmount').value);
+    
+    if (!goal || !amount) {
+        showToast('لطفا اطلاعات کامل را وارد کنید', 'error');
+        return;
+    }
+    
+    const savingsGoal = {
+        id: Date.now(),
+        goal,
+        targetAmount: amount,
+        currentAmount: 0,
+        date: new Date().toISOString()
+    };
+    
+    appState.savingsGoals.push(savingsGoal);
+    saveUserData();
+    
+    document.getElementById('savingsGoal').value = '';
+    document.getElementById('savingsGoalAmount').value = '';
+    showToast('هدف پس‌انداز ثبت شد! 🎯', 'success');
+}
 
-      {/* Modals */}
-      {showThemePanel && (
-        <ThemePanel 
-          themes={THEMES} 
-          current={currentTheme} 
-          isPinned={isPinned}
-          onSelect={applyTheme} 
-          onPin={togglePin}
-          onClose={() => setShowThemePanel(false)} 
-          lang={lang}
-        />
-      )}
+// Handle Logo Upload
+function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const logoImg = document.getElementById('appLogo');
+        const galleryLogo = document.getElementById('galleryLogo');
+        
+        logoImg.src = event.target.result;
+        logoImg.style.display = 'block';
+        
+        galleryLogo.src = event.target.result;
+        galleryLogo.style.display = 'block';
+        
+        // Save to localStorage
+        localStorage.setItem('nagai_logo', event.target.result);
+        
+        showToast('لوگو آپلود شد! 🏷️', 'success');
+    };
+    reader.readAsDataURL(file);
+}
 
-      {showLangModal && (
-        <LanguageModal 
-          current={lang} 
-          onSelect={changeLang}
-          onClose={() => setShowLangModal(false)}
-          onDownload={downloadLangFile}
-          lang={lang}
-        />
-      )}
-    </div>
-  );
-};
+// Load saved logo
+function loadSavedLogo() {
+    const savedLogo = localStorage.getItem('nagai_logo');
+    if (savedLogo) {
+        const logoImg = document.getElementById('appLogo');
+        const galleryLogo = document.getElementById('galleryLogo');
+        
+        logoImg.src = savedLogo;
+        logoImg.style.display = 'block';
+        
+        galleryLogo.src = savedLogo;
+        galleryLogo.style.display = 'block';
+    } else {
+        // Use default SVG logo
+        const logoImg = document.getElementById('appLogo');
+        const galleryLogo = document.getElementById('galleryLogo');
+        
+        logoImg.src = 'logo.svg';
+        logoImg.style.display = 'block';
+        
+        galleryLogo.src = 'logo.svg';
+        galleryLogo.style.display = 'block';
+    }
+}
 
-export default BornaHoldingEntrance;
+// Save Zarinpal Settings
+function saveZarinpalSettings() {
+    const merchantId = document.getElementById('zarinpalMerchantId').value.trim();
+    
+    appState.zarinpalMerchantId = merchantId;
+    saveUserData();
+    
+    const statusIndicator = document.getElementById('apiStatus');
+    const statusText = document.getElementById('apiStatusText');
+    
+    if (merchantId) {
+        statusIndicator.textContent = '✅';
+        statusText.textContent = 'متصل';
+        showToast('تنظیمات زرین‌پال ذخیره شد! 🔗', 'success');
+    } else {
+        statusIndicator.textContent = '❌';
+        statusText.textContent = 'متصل نیست';
+    }
+    
+    closeModals();
+}
+
+// Handle Nav Click
+function handleNavClick(e) {
+    const action = e.currentTarget.dataset.action;
+    const screen = e.currentTarget.dataset.screen;
+    
+    if (screen === 'dashboard') {
+        // Already on dashboard
+        return;
+    }
+    
+    if (action === 'add') {
+        openModal('financeModal');
+        return;
+    }
+    
+    // Update active nav
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    
+    // Handle action
+    handleActionClick({ currentTarget: e.currentTarget });
+}
+
+// Show Toast
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'toastIn 0.4s ease reverse';
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+// Load saved logo on startup
+loadSavedLogo();
